@@ -1,0 +1,24 @@
+<div class="card">
+  <p-menubar>
+    <ng-template #end>
+      <div class="flex gap-5">
+        <div class="flex items-center gap-2">
+          @for (item of items; track item) {
+            <a pRipple [href]="item.routerLink" class="flex items-center p-menubar-item-link px-3 py-2">
+              <i class="{{item.icon}}"></i>
+              <span>{{ item.label }}</span>
+
+              @if (item.badge) {
+                <p-badge [value]="item.badge" class="ml-2"></p-badge>
+              }
+            </a>
+          }
+        </div>
+        <div class="flex items-center gap-2">
+          <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" shape="circle"/>
+        </div>
+      </div>
+
+    </ng-template>
+  </p-menubar>
+</div>

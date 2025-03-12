@@ -1,0 +1,62 @@
+<div class="mb-10">
+  <p-toolbar>
+    <ng-template #start>
+      <p-iconfield iconPosition="left">
+        <p-inputicon styleClass="pi pi-search"/>
+        <input type="text" pInputText placeholder="Search"/>
+      </p-iconfield>
+    </ng-template>
+    <ng-template #end>
+      <p-multiselect
+        [options]="authors"
+        [group]="true"
+        [(ngModel)]="storyFilter.authors"
+        (ngModelChange)="filterStories()"
+        placeholder="Filter by Authors"
+        display="chip"
+        optionLabel="name"
+        styleClass="w-full md:w-80 mr-3">
+        <ng-template let-category #item>
+          <div class="flex items-center gap-2">
+            <p-tag
+              [value]="(category.name | categoryFormat).label"
+              [rounded]="true"
+              [styleClass]="'category-tag'"
+              [style]="{'background-color': (category.name | categoryFormat).color}">
+            </p-tag>
+          </div>
+        </ng-template>
+      </p-multiselect>
+
+<!--      @if (storyFilter.categories.length) {-->
+<!--        <p-button class="mr-3 " icon="pi pi-times"-->
+<!--                  [rounded]="true" severity="secondary"-->
+<!--                  [outlined]="true"-->
+<!--                  (onClick)="resetCategories()"/>-->
+<!--      }-->
+      <p-multiselect
+        [options]="categories"
+        [(ngModel)]="storyFilter.categories"
+        (ngModelChange)="filterStories()"
+        placeholder="Filter by Categories"
+        display="chip"
+        optionLabel="name"
+        styleClass="w-full md:w-80">
+        <ng-template let-category #item>
+          <div class="flex items-center gap-2">
+            <p-tag
+              [value]="(category.name | categoryFormat).label"
+              [rounded]="true"
+              [styleClass]="'category-tag'"
+              [style]="{'background-color': (category.name | categoryFormat).color}">
+            </p-tag>
+          </div>
+        </ng-template>
+      </p-multiselect>
+    </ng-template>
+  </p-toolbar>
+</div>
+
+@for (story of stories; track story.id) {
+  <app-story-overview [story]="story"></app-story-overview>
+}
