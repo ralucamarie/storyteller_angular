@@ -1,0 +1,80 @@
+<!--  <p-breadcrumb class="max-w-full" [model]="items">-->
+<!--    <ng-template #item let-item>-->
+<!--      <a class="cursor-pointer" [routerLink]="item.routerLink">-->
+<!--        <i [class]="item.icon" class="font-light text-gray-600 opacity-50  hover:text-amber-500" style="font-size: 2rem;"></i>-->
+<!--      </a>-->
+<!--    </ng-template>-->
+<!--    <ng-template #separator></ng-template>-->
+<!--  </p-breadcrumb>-->
+  <p-toolbar [styleClass]="'mb-15'">
+    <ng-template #start>
+      <p-button icon="pi pi-heart" class="mr-2" text severity="secondary" />
+      <p-button icon="pi pi-print" class="mr-2" text severity="secondary" />
+      <p-button icon="pi pi-upload" text severity="secondary" />
+    </ng-template>
+    <ng-template #center>
+    </ng-template>
+    <ng-template #end>
+      <p-splitbutton label="Save" [model]="toolbarItems" />
+    </ng-template>
+  </p-toolbar>
+<div class="">
+  <div class="flex flex-col items-center mb-15">
+    <h1 class="text-5xl font-bold mb-5 text-center">{{ story()?.title }}</h1>
+    <div class="flex items-center gap-2">
+      <p-avatar image="https://primefaces.org/cdn/primevue/images/avatar/amyelsner.png" shape="circle"/>
+      <span class="font-bold">{{ story()?.authorName }}</span>
+    </div>
+  </div>
+
+  <div>
+    @for (writing of story()?.writings; track writing.id) {
+      <div>
+        <p class="text-2xl/10 indent-8">
+          {{ writing.text }}
+          <span>
+            <p-avatar
+              class="inline-block"
+              image="https://primefaces.org/cdn/primevue/images/avatar/amyelsner.png"
+              shape="circle"
+              [pTooltip]="getTooltip(writing)"
+              tooltipPosition="right"/>
+          </span>
+        </p>
+
+      </div><br>
+
+    }
+  </div>
+
+  <p-card class="my-10 flex flex-col">
+    <div class="flex items-center gap-3 mb-5">
+      <i class="pi pi-comments" style="font-size: 2rem"></i>
+      <h2 class="text-2xl font-bold">Add your thoughts</h2>
+    </div>
+    <textarea rows="5" class="w-full" pTextarea [autoResize]="true"></textarea>
+    <div class="flex justify-end mt-3">
+      <p-button severity="success" label="Submit" icon="pi pi-check" iconPos="left"/>
+    </div>
+  </p-card>
+
+
+  <div>
+    <h2 class="text-2xl font-bold mb-10">What others think <span class="font-normal">({{ story()?.comments?.length }})</span></h2>
+    <p-divider></p-divider>
+
+    @for (comment of story()?.comments; track comment.id) {
+      <div class="my-5">
+        <div class="flex items-center gap-2 mt-5 mb-3">
+          <p-avatar image="https://primefaces.org/cdn/primevue/images/avatar/amyelsner.png" shape="circle"/>
+          <span class="font-bold">{{ comment?.authorName }}</span>
+        </div>
+        <p>{{ comment?.content }}</p>
+      </div>
+      <p-divider></p-divider>
+    }
+  </div>
+
+</div>
+
+
