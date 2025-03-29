@@ -15,7 +15,9 @@
           }
         </div>
         <div class="flex items-center gap-2">
-          <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" shape="circle"/>
+          <p-menu #userMenu [model]="userMenuItems" [popup]="true" />
+
+          <p-avatar (click)="userMenu.toggle($event)" image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" shape="circle"/>
         </div>
       </div>
 
