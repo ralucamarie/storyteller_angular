@@ -1,12 +1,12 @@
 export interface IUser {
-  id?: string | null;
+  user_id?: string | null;
   email: string | null;
   password: string | null;
   authorName: string | null;
 }
 
 export class User implements IUser {
-  id?: string | null = null;
+  user_id?: string | null = null;
   email: string | null = null;
   password: string | null = null;
   authorName: string | null = null;
@@ -15,7 +15,7 @@ export class User implements IUser {
     if (!userDto) {
       return;
     }
-    this.id = userDto.id;
+    this.user_id = userDto.user_id;
     this.email = userDto.email;
     this.password = userDto.password;
     this.authorName = userDto.authorName;
@@ -24,7 +24,7 @@ export class User implements IUser {
 
   static toDto(user: IUser){
     return {
-      id: user.id,
+      user_id: user.user_id,
       email: user.email,
       password: user.password,
       author_name: user.authorName,

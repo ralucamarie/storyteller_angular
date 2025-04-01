@@ -6,18 +6,7 @@
 <!--    </ng-template>-->
 <!--    <ng-template #separator></ng-template>-->
 <!--  </p-breadcrumb>-->
-  <p-toolbar [styleClass]="'mb-15'">
-    <ng-template #start>
-      <p-button icon="pi pi-heart" class="mr-2" text severity="secondary" />
-      <p-button icon="pi pi-print" class="mr-2" text severity="secondary" />
-      <p-button icon="pi pi-upload" text severity="secondary" />
-    </ng-template>
-    <ng-template #center>
-    </ng-template>
-    <ng-template #end>
-      <p-splitbutton label="Save" [model]="toolbarItems" />
-    </ng-template>
-  </p-toolbar>
+<app-story-toolbar></app-story-toolbar>
 <div class="">
   <div class="flex flex-col items-center mb-15">
     <h1 class="text-5xl font-bold mb-5 text-center">{{ story()?.title }}</h1>
@@ -52,9 +41,9 @@
       <i class="pi pi-comments" style="font-size: 2rem"></i>
       <h2 class="text-2xl font-bold">Add your thoughts</h2>
     </div>
-    <textarea rows="5" class="w-full" pTextarea [autoResize]="true"></textarea>
+    <textarea rows="5" class="w-full" pTextarea [(ngModel)]="commentContent" [autoResize]="true"></textarea>
     <div class="flex justify-end mt-3">
-      <p-button severity="success" label="Submit" icon="pi pi-check" iconPos="left"/>
+      <p-button severity="success" label="Submit" (onClick)="addComment()" icon="pi pi-check" iconPos="left"/>
     </div>
   </p-card>
 
@@ -65,10 +54,17 @@
 
     @for (comment of story()?.comments; track comment.id) {
       <div class="my-5">
-        <div class="flex items-center gap-2 mt-5 mb-3">
-          <p-avatar image="https://primefaces.org/cdn/primevue/images/avatar/amyelsner.png" shape="circle"/>
-          <span class="font-bold">{{ comment?.authorName }}</span>
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2 mt-5 mb-3">
+            <p-avatar image="https://primefaces.org/cdn/primevue/images/avatar/amyelsner.png" shape="circle"/>
+            <span class="font-bold">{{ comment?.authorName }}</span>
+          </div>
+          <div class="text-xs cursor-pointer" (click)="deleteComment(comment?.id)">
+            <i class="pi pi-trash" (click)="deleteComment(comment?.id)"></i>
+          </div>
+
         </div>
+
         <p>{{ comment?.content }}</p>
       </div>
       <p-divider></p-divider>

@@ -1,0 +1,16 @@
+<div class="w-full z-50">
+  <p-toolbar [styleClass]="'mb-15'">
+    <ng-template #start>
+      <p-button icon="pi pi-heart" class="mr-2" text severity="secondary"/>
+      <p-button icon="pi pi-print" class="mr-2" text severity="secondary"/>
+      <p-button icon="pi pi-upload" text severity="secondary"/>
+    </ng-template>
+    <ng-template #center>
+    </ng-template>
+    <ng-template #end>
+      <p-splitbutton [label]="storyEditMode() ? 'Save' : 'Edit'"
+                     [model]="toolbarItems"
+      (onClick)="storyEditMode() ? saveStory() : editStory()"/>
+    </ng-template>
+  </p-toolbar>
+</div>

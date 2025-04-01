@@ -1,7 +1,7 @@
 import { Injectable, signal, WritableSignal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, Observable, of } from 'rxjs';
-import { IStoryOverview, Story } from '../models/story.model';
+import { IStory, IStoryOverview, Story } from '../models/story.model';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +11,7 @@ export class StoryService {
 
   // Signal to store the story details
   story: WritableSignal<Story | null> = signal<Story | null>(null);
+  storyEditMode: WritableSignal<boolean> = signal<boolean>(false);
 
   constructor(private http: HttpClient) {}
 
@@ -29,5 +30,13 @@ export class StoryService {
       .subscribe(data => {
         this.story.set(data); // Update the signal with the response
       });
+  }
+
+  createStory(story: Object): Observable<any> {
+    return this.http.post<IStory>(this.apiUrl, story);
+  }
+
+  setStoryEditMode(value: boolean) {
+    this.storyEditMode.set(value);
   }
 }
