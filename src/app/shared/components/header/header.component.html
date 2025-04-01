@@ -2,6 +2,7 @@
   <p-menubar>
     <ng-template #end>
       <div class="flex gap-5">
+        <p-button icon="pi pi-plus-circle" label="Add story" (onClick)="addNewStory()"></p-button>
         <div class="flex items-center gap-2">
           @for (item of items; track item) {
             <a pRipple [href]="item.routerLink" class="flex items-center p-menubar-item-link px-3 py-2">

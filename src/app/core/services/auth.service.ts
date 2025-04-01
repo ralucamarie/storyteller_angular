@@ -36,7 +36,6 @@ export class AuthService {
     try {
       const decodedUser: User = jwtDecode(token);
       this.user.set(decodedUser);
-      console.log(decodedUser)
     } catch (error) {
       console.error('Invalid token', error);
       this.logout();
@@ -53,7 +52,7 @@ export class AuthService {
         this.token.set(res.access);
         this.refreshToken.set(res.refresh);
 
-        this.user.set(this.getUser());
+        this.decodeToken(res.access);
         this.isAuthenticated.set(true);
         localStorage.setItem('token', res.access);
         localStorage.setItem('refresh_token', res.refresh);

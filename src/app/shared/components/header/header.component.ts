@@ -5,6 +5,8 @@ import { Ripple } from 'primeng/ripple';
 import { Badge } from 'primeng/badge';
 import { Avatar } from 'primeng/avatar';
 import { Menu } from 'primeng/menu';
+import { Button } from 'primeng/button';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -13,7 +15,8 @@ import { Menu } from 'primeng/menu';
     Ripple,
     Badge,
     Avatar,
-    Menu
+    Menu,
+    Button
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
@@ -22,6 +25,8 @@ export class HeaderComponent implements OnInit {
 
   items: MenuItem[] =[];
   userMenuItems: MenuItem[] =[];
+
+  constructor(private router: Router) {}
 
   ngOnInit() {
     this.items = [
@@ -43,5 +48,9 @@ export class HeaderComponent implements OnInit {
         routerLink: '/users/logout',
       }
     ]
+  }
+
+  addNewStory() {
+    this.router.navigate(['/add-story']);
   }
 }
