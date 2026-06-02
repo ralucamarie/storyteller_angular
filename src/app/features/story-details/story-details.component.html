@@ -30,20 +30,53 @@
   <div>
     @for (writing of story()?.writings; track writing.id) {
       <div>
-        <p class="text-2xl/10 indent-8">
-          {{ writing.text }}
-          <span>
-            <p-avatar
-              class="inline-block"
-              image="https://primefaces.org/cdn/primevue/images/avatar/amyelsner.png"
-              shape="circle"
-              [pTooltip]="getTooltip(writing)"
-              tooltipPosition="right"/>
-          </span>
-        </p>
-
+        @if (isEditing(writing)) {
+          <textarea
+            rows="8"
+            class="w-full text-2xl/10"
+            pTextarea
+            [autoResize]="true"
+            [(ngModel)]="editText">
+          </textarea>
+          <div class="flex gap-2 mt-3">
+            <p-button
+              severity="success"
+              label="Save"
+              icon="pi pi-check"
+              [loading]="savingWriting()"
+              (onClick)="saveWriting(writing)"/>
+            <p-button
+              label="Cancel"
+              severity="secondary"
+              [disabled]="savingWriting()"
+              (onClick)="cancelEdit()"/>
+          </div>
+        } @else {
+          <p class="text-2xl/10 indent-8">
+            {{ writing.text }}
+            <span class="group relative inline-block align-middle ml-1">
+              <p-avatar
+                class="inline-block"
+                image="https://primefaces.org/cdn/primevue/images/avatar/amyelsner.png"
+                shape="circle"/>
+              <span
+                class="writing-author-popover absolute left-full top-1/2 z-10 ml-2 hidden -translate-y-1/2 flex-col gap-2 rounded-md border border-surface-200 bg-surface-0 p-2 text-sm shadow-md group-hover:flex group-focus-within:flex dark:border-surface-700 dark:bg-surface-900">
+                <span class="whitespace-pre-line text-surface-700 dark:text-surface-200">{{ getAuthorLabel(writing) }}</span>
+                @if (canEditWriting(writing)) {
+                  <p-button
+                    type="button"
+                    icon="pi pi-pencil"
+                    size="small"
+                    severity="secondary"
+                    [text]="true"
+                    aria-label="Edit writing"
+                    (onClick)="startEdit(writing, $event)"/>
+                }
+              </span>
+            </span>
+          </p>
+        }
       </div><br>
-
     }
   </div>
 
@@ -76,5 +109,4 @@
   </div>
 
 </div>
-
 
