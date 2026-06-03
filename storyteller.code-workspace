@@ -1,0 +1,24 @@
+{
+  "folders": [
+    {
+      "name": "angular",
+      "path": "."
+    },
+    {
+      "name": "django",
+      "path": "storyteller_django"
+    }
+  ],
+  "settings": {
+    "typescript.tsdk": "${workspaceFolder:angular}/node_modules/typescript/lib",
+    "typescript.enablePromptUseWorkspaceTsdk": true,
+    "editor.gotoLocation.multipleDefinitions": "goto"
+  },
+  "extensions": {
+    "recommendations": [
+      "angular.ng-template",
+      "ms-python.python",
+      "ms-python.vscode-pylance"
+    ]
+  }
+}
