@@ -101,11 +101,12 @@ export class StoryDetailsComponent implements OnInit {
   }
 
   saveWriting(writing: Writing): void {
-    if (!writing.id || this.savingWriting()) {
+    const storyId = this.story()?.id;
+    if (!writing.id || storyId == null || storyId === '' || this.savingWriting()) {
       return;
     }
     this.savingWriting.set(true);
-    this.storyService.saveWriting(writing.id, this.editText).pipe(
+    this.storyService.saveWriting(storyId, writing.id, this.editText).pipe(
       finalize(() => this.savingWriting.set(false))
     ).subscribe({
       next: () => this.cancelEdit(),

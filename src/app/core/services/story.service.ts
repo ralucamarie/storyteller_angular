@@ -33,9 +33,9 @@ export class StoryService {
   }
 
   /** Persists an updated writing segment; wire to Django when the endpoint exists. */
-  saveWriting(writingId: number, text: string): Observable<Writing> {
+  saveWriting(storyId: string | number, writingId: number, text: string): Observable<Writing> {
     const url = `http://127.0.0.1:8000/api/writings/${writingId}/`;
-    return this.http.patch<Writing>(url, { text }).pipe(
+    return this.http.patch<Writing>(url, { text, story_id: storyId }).pipe(
       tap(updated => this.applyWritingUpdate(updated))
     );
   }
