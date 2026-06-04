@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="logoTitle logoDesc">
+  <title id="logoTitle">Povesticupesti</title>
+  <desc id="logoDesc">Minimal storytelling mark: open book with a flowing narrative line</desc>
+  <!-- Page left -->
+  <path
+    fill="#264653"
+    d="M10 18c0-4 9-8 22-8v36c-9 0-17-3-22-8V18Z"/>
+  <!-- Page right -->
+  <path
+    fill="#2A9D8F"
+    d="M54 18c0-4-9-8-22-8v36c9 0 17-3 22-8V18Z"/>
+  <!-- Spine highlight -->
+  <rect x="31" y="10" width="2" height="44" rx="1" fill="#1D3557"/>
+  <!-- Inner pages (negative space feel) -->
+  <path
+    fill="#F4F1DE"
+    d="M14 22c4-2 10-3 18-3s14 1 18 3v24c-4 3-10 5-18 5s-14-2-18-5V22Z"/>
+  <!-- Story arc: reads as wave, path, and subtle fish tail toward the name -->
+  <path
+    fill="none"
+    stroke="#E9C46A"
+    stroke-width="3"
+    stroke-linecap="round"
+    d="M20 36c8-6 12-14 24-18 8 10 8 18 4 24"/>
+  <circle cx="46" cy="24" r="2.5" fill="#E76F51"/>
+</svg>
