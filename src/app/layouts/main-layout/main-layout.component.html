@@ -1,19 +1,18 @@
-<div class="flex flex-col h-screen">
-  <!-- Header -->
-  <header class="w-full">
-    <app-header></app-header>
+<div class="main-layout">
+  <header class="main-layout__header">
+    <div class="main-layout__content">
+      <app-header></app-header>
+    </div>
   </header>
 
-  <div class="flex flex-1 justify-center">
-    <!-- Main Content -->
-    <main class="w-full sm:w-[90%] lg:w-[70%] p-6 overflow-auto">
-      <router-outlet></router-outlet> <!-- Child pages injected here -->
+  <div class="main-layout__body">
+    <main class="main-layout__content main-layout__main">
+      <router-outlet></router-outlet>
     </main>
   </div>
 
-  <!-- Footer -->
-  <footer class="w-full">
+  <footer class="main-layout__footer">
     <app-footer></app-footer>
   </footer>
 </div>
-<p-scrolltop></p-scrolltop>
+<p-scrolltop [style]="{ bottom: '2rem', left: '2rem', right: 'auto' }" />

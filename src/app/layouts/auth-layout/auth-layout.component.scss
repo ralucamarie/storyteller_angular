@@ -1,0 +1,12 @@
+:host {
+  display: block;
+}
+
+.auth-layout {
+  background: linear-gradient(
+    135deg,
+    var(--p-surface-100) 0%,
+    var(--p-surface-0) 50%,
+    var(--p-surface-100) 100%
+  );
+}

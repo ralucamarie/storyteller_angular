@@ -1,0 +1,60 @@
+<section class="writing-assist">
+  <div class="writing-assist__header">
+    <i class="pi pi-sparkles" aria-hidden="true"></i>
+    <h3 class="writing-assist__title">{{ 'writingAssist.title' | translate }}</h3>
+  </div>
+  <p class="writing-assist__hint">{{ 'writingAssist.hint' | translate }}</p>
+
+  <div class="writing-assist__actions">
+    <p-button
+      type="button"
+      [label]="'writingAssist.suggestion' | translate"
+      icon="pi pi-lightbulb"
+      severity="secondary"
+      [outlined]="true"
+      [disabled]="loading()"
+      (onClick)="request('suggestion')" />
+    <p-button
+      type="button"
+      [label]="'writingAssist.game' | translate"
+      icon="pi pi-play"
+      severity="secondary"
+      [outlined]="true"
+      [disabled]="loading()"
+      (onClick)="request('game')" />
+  </div>
+
+  @if (loading()) {
+    <div class="writing-assist__loading">
+      <p-progressSpinner strokeWidth="4" styleClass="writing-assist__spinner" />
+      <span>{{ 'writingAssist.loading' | translate }}</span>
+    </div>
+  }
+
+  @if (error()) {
+    <p-message severity="error" [text]="error()!" styleClass="w-full" />
+  }
+
+  @if (resultContent(); as content) {
+    <div class="writing-assist__result">
+      @if (resultTitle(); as title) {
+        <p class="writing-assist__result-title">{{ title }}</p>
+      }
+      <p class="writing-assist__result-body">{{ content }}</p>
+      <div class="writing-assist__result-actions">
+        <p-button
+          type="button"
+          [label]="'writingAssist.useInDraft' | translate"
+          icon="pi pi-plus"
+          severity="success"
+          (onClick)="useInDraft()" />
+        <p-button
+          type="button"
+          [label]="'writingAssist.dismiss' | translate"
+          severity="secondary"
+          text
+          (onClick)="clear()" />
+      </div>
+    </div>
+  }
+</section>

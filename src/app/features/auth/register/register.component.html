@@ -1,0 +1,51 @@
+<p-card [header]="'auth.register.title' | translate">
+  @if (errorMessage()) {
+    <p-message severity="error" [text]="errorMessage()!" styleClass="w-full mb-4" />
+  }
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="flex flex-col gap-2">
+        <label for="name">{{ 'auth.register.firstName' | translate }}</label>
+        <input id="name" pInputText formControlName="name" class="w-full" autocomplete="given-name" />
+      </div>
+      <div class="flex flex-col gap-2">
+        <label for="surname">{{ 'auth.register.lastName' | translate }}</label>
+        <input id="surname" pInputText formControlName="surname" class="w-full" autocomplete="family-name" />
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <label for="author_name">{{ 'auth.register.authorName' | translate }}</label>
+      <input id="author_name" pInputText formControlName="author_name" class="w-full" />
+      <small class="text-surface-500">{{ 'auth.register.authorNameHint' | translate }}</small>
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <label for="email">{{ 'auth.register.email' | translate }}</label>
+      <input id="email" type="email" pInputText formControlName="email" class="w-full" autocomplete="email" />
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <label for="password">{{ 'auth.register.password' | translate }}</label>
+      <p-password
+        id="password"
+        formControlName="password"
+        [toggleMask]="true"
+        styleClass="w-full"
+        inputStyleClass="w-full"
+        autocomplete="new-password" />
+      <small class="text-surface-500">{{ 'auth.register.passwordHint' | translate }}</small>
+    </div>
+
+    <p-button type="submit" [label]="'auth.register.submit' | translate" styleClass="w-full" [loading]="loading()" />
+
+    <p class="text-center text-sm text-surface-500">
+      {{ 'auth.register.hasAccount' | translate }}
+      <a routerLink="/auth/login" class="text-primary font-medium">{{
+        'auth.register.signIn' | translate
+      }}</a>
+    </p>
+  </form>
+</p-card>
+

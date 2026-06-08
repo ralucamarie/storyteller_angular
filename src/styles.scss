@@ -1,5 +1,6 @@
 @use "primeicons/primeicons.css";
 @import 'assets/styles/commons';
+@import 'app/shared/styles/writing-block';
 @plugin 'tailwindcss-primeui';
 @layer tailwind, primeng, theme;
 

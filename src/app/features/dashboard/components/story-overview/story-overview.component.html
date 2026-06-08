@@ -1,43 +1,123 @@
-<div class="card pb-4">
-  <p-panel [toggleable]="false">
-    <ng-template pTemplate="header">
-      <div class="flex flex-col items-start gap-2">
-        <div class="font-bold text-2xl">{{ story()?.title }}</div>
-        <div class="flex items-center gap-2">
-          <p-avatar image="https://primefaces.org/cdn/primevue/images/avatar/amyelsner.png" shape="circle"/>
-          <span class="font-bold">{{ story()?.authorName }}</span>
-        </div>
+<article
+  class="story-card"
+  [class.story-card--grid]="layout() === 'grid'"
+  [class.story-card--no-cover]="!coverImageUrl()">
+  <div class="story-card__main">
+    <header class="story-card__header">
+      <div class="story-card__title-row">
+        <a
+          class="story-card__title"
+          [routerLink]="['/story-details', story()?.id]">
+          {{ story()?.title }}
+        </a>
+        <span class="story-card__by">{{ 'common.by' | translate }}</span>
+        @if (authorDashboardParams(); as authorParams) {
+          <a
+            class="story-card__author"
+            [routerLink]="['/dashboard']"
+            [queryParams]="authorParams"
+            (click)="$event.stopPropagation()">
+            <p-avatar
+              styleClass="story-card__author-avatar"
+              [image]="authorAvatarUrl() ?? undefined"
+              [label]="!authorAvatarUrl() ? authorAvatarLabel() : undefined"
+              shape="circle" />
+            <span class="story-card__author-name">{{ story()?.author?.author_name }}</span>
+          </a>
+        } @else {
+          <span class="story-card__author">
+            <p-avatar
+              styleClass="story-card__author-avatar"
+              [image]="authorAvatarUrl() ?? undefined"
+              [label]="!authorAvatarUrl() ? authorAvatarLabel() : undefined"
+              shape="circle" />
+            <span class="story-card__author-name">{{ story()?.author?.author_name }}</span>
+          </span>
+        }
       </div>
-    </ng-template>
-    <ng-template pTemplate="footer">
-      <div class="flex flex-wrap items-center justify-between gap-4">
-        <div class="flex items-center gap-2">
-          <p-button pTooltip="Mark author as favorite" icon="pi pi-user" rounded text></p-button>
-          <p-button pTooltip="Mark story as favorite" icon="pi pi-heart" severity="secondary" rounded text></p-button>
+      @if (isOwnStory()) {
+        <div class="story-card__header-actions">
+          <p-button
+            icon="pi pi-cog"
+            severity="secondary"
+            rounded
+            text
+            [loading]="deleting()"
+            (onClick)="menu.toggle($event)" />
+          <p-menu #menu [model]="menuItems()" [popup]="true" />
         </div>
-        <span class="text-surface-500 dark:text-surface-400">{{(story()?.createdAt ?? '')| date}}</span>
-      </div>
-    </ng-template>
-    <ng-template pTemplate="icons">
-      <p-button icon="pi pi-cog" severity="secondary" rounded text (click)="menu.toggle($event)"/>
-      <p-menu #menu id="config_menu" [model]="menuItems" [popup]="true"/>
-    </ng-template>
-    <p class="m-0 cursor-pointer" [routerLink]="['/story-details', story()?.id]">
-      {{ story()?.writings?.[0]?.text | truncateText }}
-    </p>
+      }
+    </header>
 
-    <div class="flex gap-3 justify-end">
-      @for (category of story()?.categories; track category.id) {
+    <div class="story-card__body">
+      @if (coverImageUrl(); as imageUrl) {
+        <a
+          class="story-card__thumb"
+          [routerLink]="['/story-details', story()?.id]"
+          [attr.aria-label]="'dashboard.openStory' | translate">
+          <img [src]="imageUrl" alt="" loading="lazy" />
+        </a>
+        <a
+          class="story-card__excerpt"
+          [routerLink]="['/story-details', story()?.id]">
+          {{ firstWriting()?.text }}
+        </a>
+      } @else if (layout() === 'grid') {
+        <a
+          class="story-card__thumb story-card__thumb--text"
+          [routerLink]="['/story-details', story()?.id]"
+          [attr.aria-label]="'dashboard.openStory' | translate">
+          <span class="story-card__thumb-text">{{ firstWriting()?.text }}</span>
+        </a>
+      } @else {
+        <a
+          class="story-card__excerpt story-card__excerpt--full"
+          [routerLink]="['/story-details', story()?.id]">
+          {{ firstWriting()?.text }}
+        </a>
+      }
+    </div>
+  </div>
+
+  <footer class="story-card__footer">
+    <div
+      #categoriesHost
+      class="story-card__categories"
+      [pTooltip]="allCategoriesTooltip()"
+      tooltipPosition="top"
+      [attr.aria-label]="categoriesTruncated() ? allCategoriesTooltip() : null"
+      [tooltipDisabled]="!categoriesTruncated() || !allCategoriesTooltip()">
+      @for (category of visibleCategories(); track category.name ?? category.id ?? $index) {
         <p-tag
           [value]="(category.name | categoryFormat).label"
           [rounded]="true"
-          [styleClass]="'category-tag'"
-          [style]="{'background-color': (category.name | categoryFormat).color}">
-        </p-tag>
-
+          [styleClass]="'category-tag story-card__category-tag'"
+          [style]="{'background-color': (category.name | categoryFormat).color}" />
+      }
+      @if (categoriesTruncated()) {
+        <span class="story-card__categories-ellipsis" aria-hidden="true">...</span>
       }
     </div>
 
-
-  </p-panel>
-</div>
+    <div class="story-card__footer-end">
+      <time class="story-card__date">{{ (story()?.createdAt ?? '') | date: 'mediumDate' }}</time>
+      @if (!isOwnStory()) {
+        <button
+          type="button"
+          class="story-card__author-fav-btn"
+          [class.story-card__author-fav-btn--active]="authorFavorited()"
+          [pTooltip]="'dashboard.favoriteAuthor' | translate"
+          (click)="toggleAuthorFavorite($event)">
+          <app-author-favorite-icon [active]="authorFavorited()" />
+        </button>
+      }
+      <p-button
+        [pTooltip]="'dashboard.favoriteStory' | translate"
+        [icon]="favorited() ? 'pi pi-heart-fill' : 'pi pi-heart'"
+        [severity]="favorited() ? 'danger' : 'secondary'"
+        rounded
+        text
+        (onClick)="toggleStoryFavorite($event)" />
+    </div>
+  </footer>
+</article>

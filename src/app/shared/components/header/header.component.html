@@ -1,24 +1,127 @@
-<div class="card">
-  <p-menubar>
-    <ng-template #end>
-      <div class="flex gap-5">
-        <div class="flex items-center gap-2">
-          @for (item of items; track item) {
-            <a pRipple [href]="item.routerLink" class="flex items-center p-menubar-item-link px-3 py-2">
-              <i class="{{item.icon}}"></i>
-              <span>{{ item.label }}</span>
+<div class="header-shell">
+  <div class="header-inner">
+    <div class="header-start">
+      <a
+        routerLink="/dashboard"
+        class="header-brand"
+        (click)="goToStoriesOverview($event)"
+        aria-label="povești cu pești">
+        <img
+          src="assets/brand/povesticupesti-icon.png"
+          alt=""
+          aria-hidden="true"
+          class="header-brand__icon" />
+        <span class="header-brand__name">
+          povești cu pești<span class="header-brand__tld">.ro</span>
+        </span>
+      </a>
+    </div>
 
-              @if (item.badge) {
-                <p-badge [value]="item.badge" class="ml-2"></p-badge>
-              }
-            </a>
+    <div class="header-end">
+      <p-button
+        [label]="'header.newStory' | translate"
+        icon="pi pi-plus"
+        severity="success"
+        [routerLink]="['/new-story']" />
+      @if (currentUser()) {
+        <button
+          type="button"
+          class="header-icon-btn"
+          (click)="toggleNewsPanel($event)"
+          [attr.aria-label]="'header.openNewsFeed' | translate">
+          <i class="pi pi-lightbulb"></i>
+          @if (newsCount() > 0) {
+            <span class="header-icon-btn__dot" aria-hidden="true"></span>
           }
-        </div>
-        <div class="flex items-center gap-2">
-          <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" shape="circle"/>
-        </div>
-      </div>
-
-    </ng-template>
-  </p-menubar>
+        </button>
+        <p-popover #newsPanel styleClass="header-news-panel" (onShow)="refreshNews()">
+          <div class="header-news-panel__inner">
+            <div class="header-news-panel__title-row">
+              <h3 class="header-news-panel__title">{{ 'header.news' | translate }}</h3>
+              @if (newsLoading()) {
+                <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
+              }
+            </div>
+            @if (newsError()) {
+              <p class="header-news-panel__empty">{{ newsError() }}</p>
+            } @else if (!newsItems().length) {
+              <p class="header-news-panel__empty">{{ 'header.newsEmpty' | translate }}</p>
+            } @else {
+              <ul class="header-news-list">
+                @for (item of newsItems(); track item.id) {
+                  <li>
+                    <button
+                      type="button"
+                      class="header-news-item"
+                      (click)="openNewsItem(item)">
+                      <span class="header-news-item__icon" aria-hidden="true">
+                        <i class="pi" [ngClass]="newsIcon(item)"></i>
+                      </span>
+                      <span class="header-news-item__body">
+                        <span class="header-news-item__message">{{ newsMessage(item) }}</span>
+                        @if (item.preview) {
+                          <span class="header-news-item__preview">{{ item.preview }}</span>
+                        }
+                        <span class="header-news-item__time">
+                          {{ item.occurredAt | date: 'medium' }}
+                        </span>
+                      </span>
+                    </button>
+                  </li>
+                }
+              </ul>
+            }
+          </div>
+        </p-popover>
+      }
+      @if (currentUser(); as user) {
+        <button
+          type="button"
+          class="profile-avatar-btn"
+          (click)="toggleUserMenu($event)"
+          [attr.aria-label]="'header.openProfileMenu' | translate">
+          <p-avatar
+            [image]="headerAvatarUrl() ?? undefined"
+            [label]="!headerAvatarUrl() ? (user.author_name?.charAt(0)?.toUpperCase() ?? '?') : undefined"
+            shape="circle" />
+        </button>
+        <p-popover #userMenu styleClass="header-profile-menu">
+          <div class="header-profile-menu__inner">
+            <div
+              class="header-language"
+              role="group"
+              [attr.aria-label]="'header.languageSwitch' | translate">
+              <span
+                class="header-language__label"
+                [class.header-language__label--active]="!isEnglish()"
+                aria-hidden="true">RO</span>
+              <p-toggleswitch
+                [ngModel]="isEnglish()"
+                (ngModelChange)="onLanguageSwitch($event)"
+                [attr.aria-label]="'header.languageSwitch' | translate" />
+              <span
+                class="header-language__label"
+                [class.header-language__label--active]="isEnglish()"
+                aria-hidden="true">EN</span>
+            </div>
+            <div class="header-profile-menu__divider"></div>
+            <a
+              class="header-profile-menu__item"
+              routerLink="/profile"
+              (click)="userMenu.hide()">
+              <i class="pi pi-user"></i>
+              <span>{{ 'header.profile' | translate }}</span>
+            </a>
+            <button
+              type="button"
+              class="header-profile-menu__item"
+              (click)="userMenu.hide(); logout()">
+              <i class="pi pi-sign-out"></i>
+              <span>{{ 'header.logout' | translate }}</span>
+            </button>
+          </div>
+        </p-popover>
+      }
+    </div>
+  </div>
 </div>

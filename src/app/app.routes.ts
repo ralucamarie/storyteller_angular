@@ -1,11 +1,21 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/guards/auth.guard';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
 
 export const routes: Routes = [
   {
-    path: '', // Main layout
-    component: MainLayoutComponent,
-    loadChildren: () => import('./layouts/main-layout/main-layout.routes').then(m => m.MAIN_LAYOUT_ROUTES)
+    path: 'auth',
+    loadChildren: () =>
+      import('./features/auth/auth.routes').then((m) => m.AUTH_ROUTES),
   },
-  { path: '**', redirectTo: 'auth/login' } // Redirect unknown routes to login
+  {
+    path: '',
+    component: MainLayoutComponent,
+    canActivate: [authGuard],
+    loadChildren: () =>
+      import('./layouts/main-layout/main-layout.routes').then(
+        (m) => m.MAIN_LAYOUT_ROUTES
+      ),
+  },
+  { path: '**', redirectTo: 'auth/login' },
 ];

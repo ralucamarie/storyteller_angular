@@ -1,1 +1,35 @@
-<p>footer works!</p>
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__main">
+      <div class="site-footer__brand">
+        <a routerLink="/dashboard" class="site-footer__logo">
+          <i class="pi pi-book"></i>
+          <span>Storyteller</span>
+        </a>
+        <p class="site-footer__tagline">{{ 'footer.tagline' | translate }}</p>
+      </div>
+
+      @for (column of columns; track column.title) {
+        <nav class="site-footer__column" [attr.aria-label]="column.title">
+          <h3 class="site-footer__heading">{{ column.title }}</h3>
+          <ul class="site-footer__links">
+            @for (link of column.links; track link.label) {
+              <li>
+                @if (link.route) {
+                  <a [routerLink]="link.route" [fragment]="link.fragment">{{ link.label }}</a>
+                } @else if (link.external) {
+                  <a [href]="link.external" target="_blank" rel="noopener noreferrer">{{ link.label }}</a>
+                }
+              </li>
+            }
+          </ul>
+        </nav>
+      }
+    </div>
+
+    <div class="site-footer__bottom">
+      <p class="site-footer__copy">{{ 'footer.copyright' | translate: { year } }}</p>
+      <p class="site-footer__note">{{ 'footer.academicNote' | translate }}</p>
+    </div>
+  </div>
+</footer>

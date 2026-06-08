@@ -1,0 +1,124 @@
+.site-footer {
+  margin-top: 2rem;
+  padding: 2.5rem 0 1.5rem;
+  background: linear-gradient(165deg, #134e4a 0%, #0f766e 55%, #115e59 100%);
+  color: #ecfdf5;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.site-footer__inner {
+  width: 100%;
+  margin: 0 auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+.site-footer__main {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: 1.4fr repeat(3, minmax(0, 1fr));
+}
+
+.site-footer__brand {
+  max-width: 18rem;
+}
+
+.site-footer__logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #fff;
+  text-decoration: none;
+
+  i {
+    font-size: 1.35rem;
+    color: #99f6e4;
+  }
+}
+
+.site-footer__tagline {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: rgba(236, 253, 245, 0.82);
+}
+
+.site-footer__heading {
+  margin: 0 0 0.85rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #99f6e4;
+}
+
+.site-footer__links {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li + li {
+    margin-top: 0.45rem;
+  }
+
+  a {
+    color: rgba(236, 253, 245, 0.9);
+    text-decoration: none;
+    font-size: 0.92rem;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: #fff;
+      text-decoration: underline;
+    }
+  }
+}
+
+.site-footer__bottom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  margin-top: 2rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.site-footer__copy,
+.site-footer__note {
+  margin: 0;
+  font-size: 0.82rem;
+  color: rgba(236, 253, 245, 0.72);
+}
+
+@media (max-width: 900px) {
+  .site-footer__main {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .site-footer__brand {
+    grid-column: 1 / -1;
+    max-width: none;
+  }
+}
+
+@media (max-width: 540px) {
+  .site-footer__main {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 640px) {
+  .site-footer__inner {
+    width: 90%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .site-footer__inner {
+    width: 70%;
+  }
+}

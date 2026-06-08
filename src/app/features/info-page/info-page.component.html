@@ -1,0 +1,23 @@
+@if (page(); as content) {
+  <article class="info-page">
+    <app-page-breadcrumb
+      [items]="[
+        { label: ('nav.stories' | translate), routerLink: '/dashboard' },
+        { label: content.title }
+      ]" />
+
+    <p-card>
+      <h1 class="info-page__title">{{ content.title }}</h1>
+      <p class="info-page__intro">{{ content.intro }}</p>
+
+      @for (section of content.sections; track section.heading) {
+        <section class="info-page__section" [id]="section.id ?? null">
+          <h2>{{ section.heading }}</h2>
+          @for (paragraph of section.paragraphs; track paragraph) {
+            <p>{{ paragraph }}</p>
+          }
+        </section>
+      }
+    </p-card>
+  </article>
+}

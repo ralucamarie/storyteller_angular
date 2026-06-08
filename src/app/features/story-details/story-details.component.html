@@ -1,79 +1,868 @@
-<!--  <p-breadcrumb class="max-w-full" [model]="items">-->
-<!--    <ng-template #item let-item>-->
-<!--      <a class="cursor-pointer" [routerLink]="item.routerLink">-->
-<!--        <i [class]="item.icon" class="font-light text-gray-600 opacity-50  hover:text-amber-500" style="font-size: 2rem;"></i>-->
-<!--      </a>-->
-<!--    </ng-template>-->
-<!--    <ng-template #separator></ng-template>-->
-<!--  </p-breadcrumb>-->
-  <p-toolbar [styleClass]="'mb-15'">
-    <ng-template #start>
-      <p-button icon="pi pi-heart" class="mr-2" text severity="secondary" />
-      <p-button icon="pi pi-print" class="mr-2" text severity="secondary" />
-      <p-button icon="pi pi-upload" text severity="secondary" />
-    </ng-template>
-    <ng-template #center>
-    </ng-template>
-    <ng-template #end>
-      <p-splitbutton label="Save" [model]="toolbarItems" />
-    </ng-template>
-  </p-toolbar>
-<div class="">
-  <div class="flex flex-col items-center mb-15">
+<p-confirmdialog />
+
+@if (shareMessage()) {
+
+  <p-message severity="success" [text]="shareMessage()!" styleClass="w-full mb-4" />
+
+}
+
+<app-page-breadcrumb [items]="breadcrumbItems()" />
+
+<div
+
+  class="story-details"
+
+  [class.story-details--fab-visible]="currentUser() && !showWritingEditor()"
+
+  [class.story-details--fab-owner]="currentUser() && !showWritingEditor() && isMyStory()"
+
+  [class.story-details--editor-open]="showWritingEditor()">
+
+  <div class="flex flex-col items-center mb-15 story-details__hero">
+
     <h1 class="text-5xl font-bold mb-5 text-center">{{ story()?.title }}</h1>
-    <div class="flex items-center gap-2">
-      <p-avatar image="https://primefaces.org/cdn/primevue/images/avatar/amyelsner.png" shape="circle"/>
-      <span class="font-bold">{{ story()?.authorName }}</span>
+
+    <div class="flex items-center gap-2 story-details__author-row">
+
+      <p-avatar
+
+        styleClass="story-details-avatar"
+
+        [image]="storyAuthorAvatarUrl() ?? undefined"
+
+        [label]="!storyAuthorAvatarUrl() ? (storyAuthorName().charAt(0).toUpperCase()) : undefined"
+
+        shape="circle" />
+
+      @if (storyAuthorQueryParams(); as authorParams) {
+
+        <a class="story-details__author-link font-bold" [routerLink]="['/dashboard']" [queryParams]="authorParams">
+
+          {{ storyAuthorName() }}
+
+        </a>
+
+      } @else {
+
+        <span class="font-bold">{{ storyAuthorName() }}</span>
+
+      }
+
+      @if (canFavoriteAuthor(story()?.author?.id ?? null)) {
+
+        <button
+
+          type="button"
+
+          class="story-author-fav-btn"
+
+          [pTooltip]="'storyDetails.favoriteAuthor' | translate"
+
+          tooltipPosition="bottom"
+
+          [class.story-author-fav-btn--active]="isAuthorFavorited(story()?.author?.id ?? null)"
+
+          (click)="toggleAuthorFavorite($event, story()?.author?.id ?? null)">
+
+          <app-author-favorite-icon [active]="isAuthorFavorited(story()?.author?.id ?? null)" />
+
+        </button>
+
+      }
+
     </div>
+
   </div>
 
+
+
   <div>
+
     @for (writing of story()?.writings; track writing.id) {
-      <div>
-        <p class="text-2xl/10 indent-8">
+
+      <div
+
+        class="writing-entry"
+
+        [class.writing-mine]="isMyWriting(writing)"
+
+        [class.writing-other]="!isMyWriting(writing)">
+
+        <div
+
+          class="writing-block"
+
+          [class]="'writing-block--' + resolveWritingLayout(writing)">
+
+          @if (resolveWritingImageUrl(writing); as imageUrl) {
+
+            <figure class="writing-block__media">
+
+              <img [src]="imageUrl" [attr.alt]="'storyDetails.writingIllustration' | translate" loading="lazy" />
+
+            </figure>
+
+          }
+
+          <p class="writing-block__text text-2xl/10 indent-8">
+
           {{ writing.text }}
-          <span>
+
+          <span class="writing-avatar-anchor">
+
             <p-avatar
-              class="inline-block"
-              image="https://primefaces.org/cdn/primevue/images/avatar/amyelsner.png"
+
+              styleClass="writing-inline-avatar"
+
+              [image]="writingAuthorAvatarUrl(writing) ?? undefined"
+
+              [label]="!writingAuthorAvatarUrl(writing) ? (writingAuthorName(writing).charAt(0).toUpperCase()) : undefined"
+
               shape="circle"
-              [pTooltip]="getTooltip(writing)"
-              tooltipPosition="right"/>
+
+              [pTooltip]="writingTooltip"
+
+              [tooltipStyleClass]="isMyWriting(writing) ? 'writing-tooltip-mine' : 'writing-tooltip-other'"
+
+              tooltipPosition="right"
+
+              [autoHide]="false"
+
+              [hideDelay]="300"
+
+              [showDelay]="120"
+
+              appendTo="body" />
+
+            <ng-template #writingTooltip>
+
+              <div class="writing-tooltip">
+
+                <div class="writing-tooltip__author-row">
+
+                  @if (isMyWriting(writing)) {
+
+                    <span class="writing-tooltip__name">{{ 'common.me' | translate }}</span>
+
+                  } @else {
+
+                    @if (writingAuthorQueryParams(writing); as authorParams) {
+
+                      <a
+
+                        class="writing-tooltip__link"
+
+                        [routerLink]="['/dashboard']"
+
+                        [queryParams]="authorParams"
+
+                        (click)="$event.stopPropagation()">
+
+                        {{ writingAuthorName(writing) }}
+
+                      </a>
+
+                      @if (canFavoriteAuthor(writingAuthorId(writing))) {
+
+                        <button
+
+                          type="button"
+
+                          class="story-author-fav-btn story-author-fav-btn--compact"
+
+                          [class.story-author-fav-btn--active]="isAuthorFavorited(writingAuthorId(writing))"
+
+                          (mousedown)="$event.stopPropagation()"
+
+                          (click)="toggleAuthorFavorite($event, writingAuthorId(writing))">
+
+                          <app-author-favorite-icon [active]="isAuthorFavorited(writingAuthorId(writing))" />
+
+                        </button>
+
+                      }
+
+                    } @else {
+
+                      <span class="writing-tooltip__name">{{ writingAuthorName(writing) }}</span>
+
+                    }
+
+                  }
+
+                </div>
+
+                @if (formatWritingDate(writing.created)) {
+
+                  <span class="writing-tooltip__date">{{ formatWritingDate(writing.created) }}</span>
+
+                }
+
+              </div>
+
+            </ng-template>
+
           </span>
-        </p>
+
+          </p>
+
+        </div>
 
       </div><br>
 
     }
+
+
+
+    @if (typingAuthors().length) {
+
+      <div class="typing-indicator">
+
+        <span class="typing-indicator__dots" aria-hidden="true">
+
+          <span>.</span><span>.</span><span>.</span>
+
+        </span>
+
+        <span class="typing-indicator__label">{{ typingLabel() }}</span>
+
+      </div>
+
+    }
+
+
+
   </div>
 
+
+
+  @if (currentUser()) {
+
+    @if (!showWritingEditor()) {
+
+      <div class="story-actions-dock">
+
+        <button
+
+          type="button"
+
+          class="story-actions-dock__btn"
+
+          [pTooltip]="'storyDetails.continueStory' | translate"
+
+          tooltipPosition="left"
+
+          (click)="openWritingEditor()">
+
+          <i class="pi pi-pencil"></i>
+
+        </button>
+
+        @if (canFavoriteAuthor(story()?.author?.id ?? null)) {
+
+          <button
+
+            type="button"
+
+            class="story-actions-dock__btn story-actions-dock__btn--author-fav"
+
+            [pTooltip]="'storyDetails.favoriteAuthor' | translate"
+
+            tooltipPosition="left"
+
+            [class.story-actions-dock__btn--author-favorited]="isAuthorFavorited(story()?.author?.id ?? null)"
+
+            (click)="toggleAuthorFavorite($event, story()?.author?.id ?? null)">
+
+            <app-author-favorite-icon [active]="isAuthorFavorited(story()?.author?.id ?? null)" />
+
+          </button>
+
+        }
+
+        <button
+
+          type="button"
+
+          class="story-actions-dock__btn"
+
+          [pTooltip]="'storyDetails.favoriteStory' | translate"
+
+          tooltipPosition="left"
+
+          [class.story-actions-dock__btn--favorited]="isStoryFavorited()"
+
+          (click)="toggleStoryFavorite($event)">
+
+          <i class="pi" [class.pi-heart-fill]="isStoryFavorited()" [class.pi-heart]="!isStoryFavorited()"></i>
+
+        </button>
+
+        <button
+
+          type="button"
+
+          class="story-actions-dock__btn story-actions-dock__btn--muted"
+
+          [pTooltip]="'storyDetails.printStory' | translate"
+
+          tooltipPosition="left"
+
+          (click)="printStory()">
+
+          <i class="pi pi-print"></i>
+
+        </button>
+
+        <button
+
+          type="button"
+
+          class="story-actions-dock__btn story-actions-dock__btn--muted"
+
+          [pTooltip]="'storyDetails.shareStory' | translate"
+
+          tooltipPosition="left"
+
+          (click)="shareStory()">
+
+          <i class="pi pi-share-alt"></i>
+
+        </button>
+
+        @if (isMyStory()) {
+
+          <div class="story-actions-dock__owner" role="group" [attr.aria-label]="'storyDetails.ownerActions' | translate">
+
+            <button
+
+              type="button"
+
+              class="story-actions-dock__btn story-actions-dock__btn--danger"
+
+              [pTooltip]="'storyDetails.deleteStory' | translate"
+
+              tooltipPosition="left"
+
+              [disabled]="deletingStory()"
+
+              (click)="confirmDeleteStory()">
+
+              <i class="pi pi-trash"></i>
+
+            </button>
+
+          </div>
+
+        }
+
+      </div>
+
+    }
+
+
+
+    @if (showWritingEditor()) {
+
+      <div class="continue-story-editor" role="dialog" [attr.aria-label]="'storyDetails.continueStory' | translate">
+
+        @if (writingError()) {
+
+          <p-message severity="error" [text]="writingError()!" styleClass="w-full continue-story-editor__error" />
+
+        }
+
+        <div class="continue-story-editor__grid">
+
+          <aside class="continue-story-editor__assist">
+
+            @if (storyId) {
+
+              <app-writing-assist-panel
+
+                [storyId]="storyId"
+
+                [draftText]="newWritingText()"
+
+                (insertText)="onAssistInsert($event)" />
+
+            }
+
+          </aside>
+
+          <div class="continue-story-editor__main">
+
+            <div class="continue-story-editor__toolbar">
+
+              <span class="continue-story-editor__toolbar-label">{{ 'newStory.layout' | translate }}</span>
+
+              <app-writing-layout-picker
+
+                [value]="selectedWritingLayout()"
+
+                (valueChange)="selectedWritingLayout.set($event)" />
+
+            </div>
+
+            <div class="continue-story-editor__composer">
+
+              <div
+
+                class="writing-composer continue-story-editor__writing-composer"
+
+                [class]="'writing-composer--' + selectedWritingLayout()">
+
+                @if (writingImagePreview()) {
+
+                  <figure class="writing-composer__media">
+
+                    <img [src]="writingImagePreview()!" [attr.alt]="'storyDetails.writingPreview' | translate" />
+
+                  </figure>
+
+                } @else if (writingComposerNeedsMediaSlot()) {
+
+                  <div class="writing-composer__media-placeholder">
+
+                    {{ 'storyDetails.writingImageSlot' | translate }}
+
+                  </div>
+
+                }
+
+                <textarea
+
+                  class="writing-composer__text continue-story-editor__textarea"
+
+                  pTextarea
+
+                  [autoResize]="false"
+
+                  [placeholder]="'storyDetails.continuePlaceholder' | translate"
+
+                  [ngModel]="newWritingText()"
+
+                  (ngModelChange)="onWritingInput($event)">
+
+                </textarea>
+
+              </div>
+
+            </div>
+
+            <div class="continue-story-editor__meta">
+
+              <div class="continue-story-editor__image">
+
+                <label class="continue-story-editor__image-picker">
+
+                  <i class="pi pi-image"></i>
+
+                  <span>{{ 'newStory.uploadImage' | translate }}</span>
+
+                  <input
+
+                    type="file"
+
+                    accept="image/jpeg,image/png,image/webp"
+
+                    hidden
+
+                    (change)="onWritingImageSelected($event)" />
+
+                </label>
+
+                @if (selectedWritingImage()) {
+
+                  <p-button
+
+                    [label]="'storyDetails.removeImage' | translate"
+
+                    severity="secondary"
+
+                    text
+
+                    (onClick)="clearWritingImage()" />
+
+                }
+
+              </div>
+
+              <div class="continue-story-editor__actions">
+
+                <p-button
+
+                  [label]="'common.cancel' | translate"
+
+                  severity="secondary"
+
+                  text
+
+                  (onClick)="cancelWritingEditor()" />
+
+                <p-button
+
+                  [label]="'common.save' | translate"
+
+                  icon="pi pi-check"
+
+                  [loading]="savingWriting()"
+
+                  (onClick)="saveWriting()" />
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    }
+
+  }
+
+
+
   <p-card class="my-10 flex flex-col">
+
     <div class="flex items-center gap-3 mb-5">
+
       <i class="pi pi-comments" style="font-size: 2rem"></i>
-      <h2 class="text-2xl font-bold">Add your thoughts</h2>
+
+      <h2 class="text-2xl font-bold">{{ 'storyDetails.addThoughts' | translate }}</h2>
+
     </div>
-    <textarea rows="5" class="w-full" pTextarea [autoResize]="true"></textarea>
+
+    @if (commentError() && !editingCommentId()) {
+
+      <p-message severity="error" [text]="commentError()!" class="mb-3" />
+
+    }
+
+    <textarea
+
+      rows="5"
+
+      class="w-full"
+
+      pTextarea
+
+      [autoResize]="true"
+
+      [ngModel]="newCommentText()"
+
+      (ngModelChange)="newCommentText.set($event)"
+
+      [placeholder]="'storyDetails.commentPlaceholder' | translate"></textarea>
+
     <div class="flex justify-end mt-3">
-      <p-button severity="success" label="Submit" icon="pi pi-check" iconPos="left"/>
+
+      <p-button
+
+        severity="success"
+
+        [label]="'common.submit' | translate"
+
+        icon="pi pi-check"
+
+        iconPos="left"
+
+        [loading]="submittingComment()"
+
+        [disabled]="!newCommentText().trim()"
+
+        (onClick)="submitComment()" />
+
     </div>
+
   </p-card>
 
 
-  <div>
-    <h2 class="text-2xl font-bold mb-10">What others think <span class="font-normal">({{ story()?.comments?.length }})</span></h2>
+
+
+
+  <div class="comments-section">
+
+    <div class="comments-section__header">
+
+      <h2 class="text-2xl font-bold">
+
+        {{ 'storyDetails.whatOthersThink' | translate }}
+
+        <span class="font-normal">({{ story()?.comments?.length ?? 0 }})</span>
+
+      </h2>
+
+
+
+      @if (hasComments()) {
+
+        <p-selectButton
+
+          [options]="commentFilterOptions()"
+
+          [ngModel]="commentFilter()"
+
+          (ngModelChange)="onCommentFilterChange($event)"
+
+          [allowEmpty]="false"
+
+          optionLabel="label"
+
+          optionValue="value"
+
+          styleClass="comments-filter" />
+
+      }
+
+    </div>
+
+
+
+    @if (hasComments()) {
+
+      <p class="comments-section__results">{{ filteredCommentsLabel() }}</p>
+
+    }
+
+
+
     <p-divider></p-divider>
 
-    @for (comment of story()?.comments; track comment.id) {
-      <div class="my-5">
-        <div class="flex items-center gap-2 mt-5 mb-3">
-          <p-avatar image="https://primefaces.org/cdn/primevue/images/avatar/amyelsner.png" shape="circle"/>
-          <span class="font-bold">{{ comment?.authorName }}</span>
-        </div>
-        <p>{{ comment?.content }}</p>
-      </div>
-      <p-divider></p-divider>
+
+
+    @if (!hasComments()) {
+
+      <p class="comments-empty">{{ 'storyDetails.noComments' | translate }}</p>
+
+    } @else if (!filteredComments().length) {
+
+      <p class="comments-empty">
+
+        @if (commentFilter() === 'relevant') {
+
+          {{ 'storyDetails.noRelevantComments' | translate }}
+
+        } @else {
+
+          {{ 'storyDetails.noFilterMatch' | translate }}
+
+        }
+
+      </p>
+
     }
+
+
+
+    @for (comment of filteredComments(); track comment.id) {
+
+      <article class="comment-item">
+
+        <div class="comment-item__header">
+
+          <div class="flex items-center gap-2">
+
+            <p-avatar
+
+              styleClass="comment-avatar"
+
+              [label]="commentAuthorName(comment).charAt(0).toUpperCase()"
+
+              shape="circle" />
+
+            <div>
+
+              <span class="font-bold">{{ commentAuthorName(comment) }}</span>
+
+              <span class="comment-item__date">{{ formatCommentDate(commentCreatedAt(comment)) }}</span>
+
+            </div>
+
+          </div>
+
+
+
+          @if (isMyComment(comment)) {
+
+            <div class="comment-item__actions">
+
+              @if (editingCommentId() !== comment.id) {
+
+                <p-button
+
+                  icon="pi pi-pencil"
+
+                  text
+
+                  severity="secondary"
+
+                  (onClick)="startEditComment(comment)" />
+
+                <p-button
+
+                  icon="pi pi-trash"
+
+                  text
+
+                  severity="danger"
+
+                  [loading]="deletingCommentId() === comment.id"
+
+                  (onClick)="confirmDeleteComment(comment)" />
+
+              }
+
+            </div>
+
+          }
+
+        </div>
+
+
+
+        @if (editingCommentId() === comment.id) {
+
+          <div class="comment-item__edit">
+
+            @if (commentError()) {
+
+              <p-message severity="error" [text]="commentError()!" class="mb-3" />
+
+            }
+
+            <textarea
+
+              rows="3"
+
+              class="w-full"
+
+              pTextarea
+
+              [autoResize]="true"
+
+              [ngModel]="editingCommentText()"
+
+              (ngModelChange)="editingCommentText.set($event)"></textarea>
+
+            <div class="flex justify-end gap-2 mt-3">
+
+              <p-button
+
+                [label]="'common.cancel' | translate"
+
+                text
+
+                severity="secondary"
+
+                (onClick)="cancelEditComment()" />
+
+              <p-button
+
+                [label]="'common.save' | translate"
+
+                icon="pi pi-check"
+
+                [loading]="savingCommentId() === comment.id"
+
+                (onClick)="saveEditedComment(comment)" />
+
+            </div>
+
+          </div>
+
+        } @else {
+
+          <p class="comment-item__content">{{ comment.content }}</p>
+
+        }
+
+
+
+        @if (!isMyComment(comment)) {
+
+          <div class="comment-item__engagement">
+
+            <button
+
+              type="button"
+
+              class="comment-like-btn"
+
+              [class.comment-like-btn--active]="commentLikedByMe(comment)"
+
+              (click)="toggleCommentLike(comment)">
+
+              <i class="pi" [class.pi-heart-fill]="commentLikedByMe(comment)" [class.pi-heart]="!commentLikedByMe(comment)"></i>
+
+              @if (commentLikesCount(comment)) {
+
+                <span>{{ commentLikesCount(comment) }}</span>
+
+              }
+
+            </button>
+
+
+
+            <button
+
+              type="button"
+
+              class="comment-react-trigger"
+
+              [disabled]="reactingCommentId() === comment.id"
+
+              (click)="openReactionMenu($event, comment)">
+
+              <i class="pi pi-face-smile"></i>
+
+              <span>{{ 'storyDetails.react' | translate }}</span>
+
+            </button>
+
+
+
+            @for (reaction of comment.reactions; track reaction.emoji) {
+
+              <button
+
+                type="button"
+
+                class="comment-reaction-chip"
+
+                [class.comment-reaction-chip--mine]="reactionIsMine(reaction)"
+
+                [disabled]="reactingCommentId() === comment.id"
+
+                (click)="reactToComment(comment, reaction.emoji)">
+
+                {{ reaction.emoji }} {{ reaction.count }}
+
+              </button>
+
+            }
+
+          </div>
+
+        }
+
+      </article>
+
+      <p-divider></p-divider>
+
+    }
+
   </div>
+
+
+
+  <p-menu #reactionMenu [model]="reactionMenuItems()" [popup]="true" />
+
+
 
 </div>
 

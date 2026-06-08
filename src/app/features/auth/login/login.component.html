@@ -1,0 +1,46 @@
+<p-card [header]="'auth.signIn.title' | translate">
+  @if (errorMessage()) {
+    <p-message severity="error" [text]="errorMessage()!" styleClass="w-full mb-4" />
+  }
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-4">
+    <div class="flex flex-col gap-2">
+      <label for="email">{{ 'auth.signIn.email' | translate }}</label>
+      <input id="email" type="email" pInputText formControlName="email" class="w-full" autocomplete="email" />
+      @if (form.controls.email.touched && form.controls.email.invalid) {
+        <small class="text-red-500">{{ 'auth.signIn.emailInvalid' | translate }}</small>
+      }
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <label for="password">{{ 'auth.signIn.password' | translate }}</label>
+      <p-password
+        id="password"
+        formControlName="password"
+        [feedback]="false"
+        [toggleMask]="true"
+        styleClass="w-full"
+        inputStyleClass="w-full"
+        autocomplete="current-password" />
+      @if (form.controls.password.touched && form.controls.password.invalid) {
+        <small class="text-red-500">{{ 'auth.signIn.passwordMin' | translate }}</small>
+      }
+    </div>
+
+    <div class="flex justify-end">
+      <a routerLink="/auth/forgot-password" class="text-sm text-primary">{{
+        'auth.signIn.forgotPassword' | translate
+      }}</a>
+    </div>
+
+    <p-button type="submit" [label]="'auth.signIn.submit' | translate" styleClass="w-full" [loading]="loading()" />
+
+    <p class="text-center text-sm text-surface-500">
+      {{ 'auth.signIn.noAccount' | translate }}
+      <a routerLink="/auth/register" class="text-primary font-medium">{{
+        'auth.signIn.createOne' | translate
+      }}</a>
+    </p>
+  </form>
+</p-card>
+

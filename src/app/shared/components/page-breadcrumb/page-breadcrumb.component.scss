@@ -1,0 +1,36 @@
+.page-breadcrumb {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.page-breadcrumb__link {
+  color: #64748b;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.page-breadcrumb__link:hover {
+  color: #0f766e;
+}
+
+.page-breadcrumb__current {
+  color: #0f172a;
+  font-weight: 600;
+}
+
+:host ::ng-deep .page-breadcrumb__trail.p-breadcrumb {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+
+:host ::ng-deep .page-breadcrumb__trail .p-breadcrumb-list {
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+:host ::ng-deep .page-breadcrumb__trail .p-breadcrumb-separator {
+  color: #94a3b8;
+}

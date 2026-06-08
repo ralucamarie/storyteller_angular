@@ -1,33 +1,77 @@
-import { Injectable, signal, WritableSignal } from '@angular/core';
+import { Injectable, inject, signal, WritableSignal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, Observable, of } from 'rxjs';
-import { IStoryOverview, Story } from '../models/story.model';
+import { API_BASE_URL } from '../constants/api.constants';
+import { IStory, IStoryOverview, Story } from '../models/story.model';
+
+import { WritingLayout } from '../models/writing-layout.model';
+
+export interface CreateStoryRequest {
+  title: string;
+  content: string;
+  categories: string[];
+  image?: File;
+  layout?: WritingLayout;
+}
+
+export interface TypingUser {
+  author_name: string;
+}
+
+export interface TypingStatusResponse {
+  typers: TypingUser[];
+}
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class StoryService {
-  private apiUrl = 'http://127.0.0.1:8000/api/stories/'; // Django API URL
+  private readonly http = inject(HttpClient);
+  private apiUrl = `${API_BASE_URL}/stories/`;
 
-  // Signal to store the story details
   story: WritableSignal<Story | null> = signal<Story | null>(null);
 
-  constructor(private http: HttpClient) {}
-
-  getStories(): Observable<any[]> {
-    return this.http.get<IStoryOverview[]>(this.apiUrl);
+  getStories(): Observable<IStory[]> {
+    return this.http.get<IStory[]>(this.apiUrl);
   }
 
-  getStory(id: string): void{
-    this.http.get<Story>(`${this.apiUrl}${id}/`)
+  getStory(id: string): void {
+    this.http
+      .get<Story>(`${this.apiUrl}${id}/`)
       .pipe(
-        catchError(error => {
+        catchError((error) => {
           console.error('Error fetching story:', error);
-          return of(null); // Handle errors gracefully
+          return of(null);
         })
       )
-      .subscribe(data => {
-        this.story.set(data); // Update the signal with the response
+      .subscribe((data) => {
+        this.story.set(data);
       });
+  }
+
+  createStory(payload: CreateStoryRequest): Observable<Story> {
+    const form = new FormData();
+    form.append('title', payload.title);
+    form.append('content', payload.content);
+    if (payload.image) {
+      form.append('image', payload.image);
+    }
+    if (payload.layout) {
+      form.append('layout', payload.layout);
+    }
+    payload.categories?.forEach((category) => form.append('categories', category));
+    return this.http.post<Story>(this.apiUrl, form);
+  }
+
+  deleteStory(id: string | number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}${id}/`);
+  }
+
+  sendTypingPulse(storyId: string | number): Observable<TypingStatusResponse> {
+    return this.http.post<TypingStatusResponse>(`${this.apiUrl}${storyId}/typing/`, {});
+  }
+
+  getTypingStatus(storyId: string | number): Observable<TypingStatusResponse> {
+    return this.http.get<TypingStatusResponse>(`${this.apiUrl}${storyId}/typing/`);
   }
 }

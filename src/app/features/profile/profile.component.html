@@ -1,0 +1,270 @@
+<div class="profile-page">
+  <app-page-breadcrumb
+    [items]="[
+      { label: ('nav.stories' | translate), routerLink: '/dashboard' },
+      { label: ('nav.profile' | translate) }
+    ]" />
+
+  @if (loading()) {
+    <div class="profile-grid">
+      <p-skeleton height="12rem" class="col-span-full" />
+      <p-skeleton height="8rem" />
+      <p-skeleton height="8rem" />
+      <p-skeleton height="8rem" />
+      <p-skeleton height="16rem" class="col-span-full" />
+    </div>
+  } @else {
+    @if (errorMessage()) {
+      <p-card>
+        <p class="m-0 text-red-500">{{ errorMessage() }}</p>
+      </p-card>
+    }
+    @if (dashboard(); as data) {
+    <section class="profile-hero">
+      <div class="profile-hero__identity">
+        <div class="profile-hero__avatar-wrap">
+          <p-avatar
+            [image]="profileAvatarUrl() ?? undefined"
+            [label]="!profileAvatarUrl() ? (data.user.author_name?.charAt(0)?.toUpperCase() ?? '?') : undefined"
+            shape="circle"
+            size="xlarge"
+            styleClass="profile-hero__avatar" />
+          <label class="profile-hero__avatar-upload" [pTooltip]="'profile.changePhoto' | translate">
+            <i class="pi pi-camera"></i>
+            <input
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              hidden
+              [disabled]="uploadingAvatar()"
+              (change)="onAvatarSelected($event)" />
+          </label>
+          @if (profileAvatarUrl()) {
+            <button
+              type="button"
+              class="profile-hero__avatar-remove"
+              [pTooltip]="'profile.removePhoto' | translate"
+              [disabled]="uploadingAvatar()"
+              (click)="removeAvatar()">
+              <i class="pi pi-times"></i>
+            </button>
+          }
+        </div>
+        <div>
+          <p class="profile-hero__eyebrow">{{ 'profile.eyebrow' | translate }}</p>
+          <h1 class="profile-hero__name">{{ data.user.author_name }}</h1>
+          <p class="profile-hero__email">{{ data.user.email }}</p>
+        </div>
+      </div>
+
+      <div class="profile-hero__level-card">
+        <div class="profile-hero__level-header">
+          <span class="profile-hero__level-badge">{{ levelLabel(data.gamification.level) }}</span>
+          <span class="profile-hero__points">
+            <i class="pi pi-bolt"></i>
+            {{ data.gamification.points }} XP
+          </span>
+        </div>
+        <p-progressBar [value]="xpPercent()" [showValue]="false" styleClass="profile-xp-bar" />
+        <p class="profile-hero__xp-caption">
+          {{
+            'profile.xpToNext' | translate: {
+              current: data.gamification.level_progress,
+              max: data.gamification.level_max,
+              next: nextLevelCaption(data.gamification.level)
+            }
+          }}
+        </p>
+      </div>
+    </section>
+
+    <section class="profile-grid profile-stats">
+      <article class="stat-card stat-card--stories">
+        <i class="pi pi-book stat-card__icon"></i>
+        <div>
+          <p class="stat-card__value">{{ data.stats.stories_written }}</p>
+          <p class="stat-card__label">{{ 'profile.storiesWritten' | translate }}</p>
+          <p class="stat-card__hint">{{ 'profile.storiesXp' | translate }}</p>
+        </div>
+      </article>
+      <article class="stat-card stat-card--contributions">
+        <i class="pi pi-pencil stat-card__icon"></i>
+        <div>
+          <p class="stat-card__value">{{ data.stats.contributions }}</p>
+          <p class="stat-card__label">{{ 'profile.contributions' | translate }}</p>
+          <p class="stat-card__hint">{{ 'profile.contributionsXp' | translate }}</p>
+        </div>
+      </article>
+      <article class="stat-card stat-card--comments">
+        <i class="pi pi-comments stat-card__icon"></i>
+        <div>
+          <p class="stat-card__value">{{ data.stats.comments }}</p>
+          <p class="stat-card__label">{{ 'profile.comments' | translate }}</p>
+          <p class="stat-card__hint">{{ 'profile.commentsXp' | translate }}</p>
+        </div>
+      </article>
+    </section>
+
+    <section class="activity-panel">
+      <div class="activity-panel__header">
+        <div>
+          <h2 class="section-title">{{ 'profile.activityTitle' | translate }}</h2>
+          <p class="section-subtitle">{{ 'profile.activitySubtitle' | translate }}</p>
+        </div>
+        <p-selectButton
+          [options]="activityOptions()"
+          [ngModel]="activityView()"
+          (ngModelChange)="activityView.set($event)"
+          optionLabel="label"
+          optionValue="value" />
+      </div>
+
+      <div class="activity-chart">
+        @for (point of activeActivity(); track point.label) {
+          <div class="activity-chart__column">
+            <span class="activity-chart__count">{{ point.count }}</span>
+            <div class="activity-chart__bar-track">
+              <div
+                class="activity-chart__bar"
+                [style.height]="barHeight(point.count)"
+                [class.activity-chart__bar--active]="point.count > 0">
+              </div>
+            </div>
+            <span class="activity-chart__label">{{ shortLabel(point.label) }}</span>
+          </div>
+        }
+      </div>
+    </section>
+
+    <section class="content-sections">
+      <article class="content-section">
+        <header class="content-section__header">
+          <h2 class="section-title"><i class="pi pi-book"></i> {{ 'profile.myStories' | translate }}</h2>
+          <p-tag [value]="data.stats.stories_written + ' ' + ('common.total' | translate)" severity="success" />
+        </header>
+        @if (data.own_stories.length) {
+          <div class="story-list">
+            @for (story of data.own_stories; track trackStory($index, story)) {
+              <a class="story-card" [routerLink]="['/story-details', story.id]">
+                <h3>{{ story.title }}</h3>
+                <p>{{ story.intro || ('profile.noPreview' | translate) }}</p>
+                <div class="story-card__meta">
+                  <span><i class="pi pi-pencil"></i> {{ story.writings_count }}</span>
+                  <span><i class="pi pi-comments"></i> {{ story.comments_count }}</span>
+                  <span>{{ story.created_at | date: 'mediumDate' }}</span>
+                </div>
+              </a>
+            }
+          </div>
+        } @else {
+          <p class="empty-state">{{ 'profile.noOwnStories' | translate }}</p>
+        }
+      </article>
+
+      <article class="content-section">
+        <header class="content-section__header">
+          <h2 class="section-title"><i class="pi pi-users"></i> {{ 'profile.myContributions' | translate }}</h2>
+          <p-tag [value]="data.stats.contributions + ' ' + ('common.total' | translate)" severity="info" />
+        </header>
+        @if (data.contributions.length) {
+          <div class="story-list">
+            @for (item of data.contributions; track item.id) {
+              <a class="story-card story-card--contribution" [routerLink]="['/story-details', item.story.id]">
+                <h3>{{ item.story.title }}</h3>
+                <p class="story-card__quote">"{{ item.text }}"</p>
+                <div class="story-card__meta">
+                  <span>{{ 'common.by' | translate }} {{ item.story.author_name }}</span>
+                  <span>{{ item.created | date: 'mediumDate' }}</span>
+                </div>
+              </a>
+            }
+          </div>
+        } @else {
+          <p class="empty-state">{{ 'profile.noContributions' | translate }}</p>
+        }
+      </article>
+
+      <article class="content-section content-section--authors">
+        <header class="content-section__header">
+          <h2 class="section-title"><i class="pi pi-star-fill"></i> {{ 'profile.favoriteAuthors' | translate }}</h2>
+          <p-tag [value]="favoriteAuthors().length + ' ' + ('common.followed' | translate)" severity="warn" />
+        </header>
+        @if (favoriteAuthors().length) {
+          <div class="profile-favorite-authors__list">
+            @for (author of favoriteAuthors(); track author.id) {
+              <button
+                type="button"
+                class="author-chip"
+                (click)="browseAuthorStories(author)">
+                <p-avatar
+                  [label]="author.author_name.charAt(0).toUpperCase()"
+                  shape="circle"
+                  size="normal" />
+                <span class="author-chip__name">{{ author.author_name }}</span>
+                <span class="author-chip__action">
+                  {{ 'profile.viewStories' | translate }}
+                  <i class="pi pi-arrow-right" aria-hidden="true"></i>
+                </span>
+                <p-button
+                  icon="pi pi-times"
+                  [rounded]="true"
+                  [text]="true"
+                  severity="secondary"
+                  [pTooltip]="'profile.removeFavoriteAuthor' | translate"
+                  (onClick)="removeFavoriteAuthor(author, $event)" />
+              </button>
+            }
+          </div>
+        } @else {
+          <p class="empty-state">{{ 'profile.noFavoriteAuthors' | translate }}</p>
+        }
+      </article>
+
+      <article class="content-section">
+        <header class="content-section__header">
+          <h2 class="section-title"><i class="pi pi-heart-fill"></i> {{ 'profile.favoriteStories' | translate }}</h2>
+          <p-tag [value]="data.favorite_stories.length + ' ' + ('common.saved' | translate)" severity="danger" />
+        </header>
+        @if (data.favorite_stories.length) {
+          <div class="story-list">
+            @for (story of data.favorite_stories; track trackStory($index, story)) {
+              <a class="story-card story-card--favorite" [routerLink]="['/story-details', story.id]">
+                <h3>{{ story.title }}</h3>
+                <p>{{ story.intro || ('profile.storyYouLove' | translate) }}</p>
+                <div class="story-card__meta">
+                  <span>{{ 'common.by' | translate }} {{ story.author_name }}</span>
+                  <span>{{ story.created_at | date: 'mediumDate' }}</span>
+                </div>
+              </a>
+            }
+          </div>
+        } @else {
+          <p class="empty-state">{{ 'profile.noFavoriteStories' | translate }}</p>
+        }
+      </article>
+
+      <article class="content-section">
+        <header class="content-section__header">
+          <h2 class="section-title"><i class="pi pi-comment"></i> {{ 'profile.storiesIFollow' | translate }}</h2>
+          <p-tag [value]="data.commented_stories.length + ' ' + ('common.active' | translate)" severity="warn" />
+        </header>
+        @if (data.commented_stories.length) {
+          <div class="story-list">
+            @for (story of data.commented_stories; track trackStory($index, story)) {
+              <a class="story-card" [routerLink]="['/story-details', story.id]">
+                <h3>{{ story.title }}</h3>
+                <p>{{ story.intro || ('profile.joinedConversation' | translate) }}</p>
+                <div class="story-card__meta">
+                  <span>{{ 'common.by' | translate }} {{ story.author_name }}</span>
+                  <span><i class="pi pi-comments"></i> {{ story.comments_count }}</span>
+                </div>
+              </a>
+            }
+          </div>
+        } @else {
+          <p class="empty-state">{{ 'profile.noFollowedStories' | translate }}</p>
+        }
+      </article>
+    </section>
+    }
+  }
+</div>

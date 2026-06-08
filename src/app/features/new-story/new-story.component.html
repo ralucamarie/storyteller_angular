@@ -1,0 +1,268 @@
+<div class="new-story max-w-3xl mx-auto">
+
+  <app-page-breadcrumb
+
+    [items]="[
+
+      { label: ('nav.stories' | translate), routerLink: '/dashboard' },
+
+      { label: ('nav.newStory' | translate) }
+
+    ]" />
+
+
+
+  <h1 class="text-4xl font-bold mb-8 text-center">{{ 'newStory.title' | translate }}</h1>
+
+
+
+  <p-card>
+
+    @if (errorMessage()) {
+
+      <p-message severity="error" [text]="errorMessage()!" styleClass="w-full mb-4" />
+
+    }
+
+
+
+    <form [formGroup]="form" (ngSubmit)="save()" class="flex flex-col gap-6">
+
+      <div class="flex flex-col gap-2">
+
+        <label for="title" class="font-semibold">{{ 'newStory.storyTitle' | translate }}</label>
+
+        <input
+
+          id="title"
+
+          pInputText
+
+          formControlName="title"
+
+          class="w-full"
+
+          [placeholder]="'newStory.titlePlaceholder' | translate" />
+
+        @if (form.controls.title.touched && form.controls.title.invalid) {
+
+          <small class="text-red-500">{{ 'newStory.titleRequired' | translate }}</small>
+
+        }
+
+      </div>
+
+
+
+      <div class="flex flex-col gap-2">
+
+        <label for="categories" class="font-semibold">{{ 'newStory.categories' | translate }}</label>
+
+        <p-multiselect
+
+          inputId="categories"
+
+          formControlName="categories"
+
+          [options]="categoryOptions()"
+
+          optionLabel="label"
+
+          optionValue="name"
+
+          [placeholder]="'newStory.categoriesPlaceholder' | translate"
+
+          display="chip"
+
+          styleClass="w-full new-story__categories"
+
+          [filter]="true">
+
+          <ng-template let-category #item>
+
+            <p-tag
+
+              [value]="(category.name | categoryFormat).label"
+
+              [rounded]="true"
+
+              [styleClass]="'category-tag'"
+
+              [style]="{'background-color': (category.name | categoryFormat).color}" />
+
+          </ng-template>
+
+        </p-multiselect>
+
+        @if (form.controls.categories.touched && form.controls.categories.invalid) {
+
+          <small class="text-red-500">{{ 'newStory.categoriesRequired' | translate }}</small>
+
+        }
+
+      </div>
+
+
+
+      <div class="flex flex-col gap-2">
+
+        <label class="font-semibold">{{ 'newStory.layout' | translate }}</label>
+
+        <app-writing-layout-picker
+
+          [value]="selectedLayout()"
+
+          (valueChange)="selectedLayout.set($event)" />
+
+      </div>
+
+
+
+      <div class="flex flex-col gap-2 new-story__writing-section">
+
+        <label for="content" class="font-semibold">{{ 'newStory.openingWriting' | translate }}</label>
+
+        <small class="text-surface-500">{{ 'newStory.imageHint' | translate }}</small>
+
+        <div class="new-story__assist-section" [class.new-story__assist-section--open]="showAssist()">
+
+          <button
+
+            type="button"
+
+            class="new-story__assist-toggle"
+
+            (click)="toggleAssist()"
+
+            [attr.aria-expanded]="showAssist()">
+
+            <i class="pi new-story__assist-chevron"
+
+              [class.pi-chevron-down]="showAssist()"
+
+              [class.pi-chevron-right]="!showAssist()"></i>
+
+            <i class="pi pi-sparkles"></i>
+
+            <span>{{ 'writingAssist.toggle' | translate }}</span>
+
+          </button>
+
+          @if (showAssist()) {
+
+            <app-writing-assist-panel
+
+              [storyTitle]="assistTitle()"
+
+              [storyCategories]="assistCategories()"
+
+              [draftText]="assistDraft()"
+
+              (insertText)="onAssistInsert($event)" />
+
+          }
+
+        </div>
+
+        <div class="writing-composer" [class]="'writing-composer--' + selectedLayout()">
+
+          @if (imagePreview()) {
+
+            <figure class="writing-composer__media new-story__media-preview">
+
+              <img [src]="imagePreview()!" [attr.alt]="'newStory.changeImage' | translate" />
+
+              <label class="new-story__media-change">
+
+                <i class="pi pi-image"></i>
+
+                <span>{{ 'newStory.changeImage' | translate }}</span>
+
+                <input
+
+                  type="file"
+
+                  accept="image/jpeg,image/png,image/webp"
+
+                  hidden
+
+                  (change)="onImageSelected($event)" />
+
+              </label>
+
+            </figure>
+
+          } @else {
+
+            <label class="writing-composer__media-placeholder new-story__media-upload">
+
+              <i class="pi pi-image"></i>
+
+              <span>{{ 'newStory.uploadImage' | translate }}</span>
+
+              <input
+
+                type="file"
+
+                accept="image/jpeg,image/png,image/webp"
+
+                hidden
+
+                (change)="onImageSelected($event)" />
+
+            </label>
+
+          }
+
+          <textarea
+
+            id="content"
+
+            rows="12"
+
+            class="writing-composer__text w-full"
+
+            pTextarea
+
+            [autoResize]="true"
+
+            formControlName="content"
+
+            [placeholder]="'newStory.contentPlaceholder' | translate">
+
+          </textarea>
+
+        </div>
+
+        @if (form.controls.content.touched && form.controls.content.invalid) {
+
+          <small class="text-red-500">{{ 'newStory.contentRequired' | translate }}</small>
+
+        }
+
+      </div>
+
+
+
+      <div class="flex justify-end gap-2">
+
+        <p-button [label]="'common.cancel' | translate" severity="secondary" text (onClick)="cancel()" />
+
+        <p-button
+
+          type="submit"
+
+          [label]="'newStory.saveStory' | translate"
+
+          icon="pi pi-check"
+
+          [loading]="loading()" />
+
+      </div>
+
+    </form>
+
+  </p-card>
+
+</div>
+

@@ -1,0 +1,431 @@
+{
+  "common": {
+    "stories": "Povești",
+    "story": "Poveste",
+    "cancel": "Anulează",
+    "save": "Salvează",
+    "submit": "Trimite",
+    "me": "Eu",
+    "by": "de",
+    "edit": "Editează",
+    "delete": "Șterge",
+    "loading": "Se încarcă...",
+    "breadcrumb": "Fir de navigare",
+    "total": "total",
+    "saved": "salvate",
+    "followed": "urmărite",
+    "active": "active"
+  },
+  "nav": {
+    "stories": "Povești",
+    "newStory": "Poveste nouă",
+    "profile": "Profil",
+    "about": "Despre"
+  },
+  "header": {
+    "newStory": "Poveste nouă",
+    "news": "Noutăți",
+    "openNewsFeed": "Deschide fluxul de noutăți",
+    "openProfileMenu": "Deschide meniul profilului",
+    "profile": "Profil",
+    "language": "Limbă",
+    "languageSwitch": "Schimbă limba aplicației",
+    "logout": "Deconectare",
+    "newsLoadError": "Nu s-au putut încărca noutățile. Încearcă din nou.",
+    "newsEmpty": "Nicio actualizare recentă. Activitatea la poveștile tale, poveștile pe care le urmărești și autorii favoriți vor apărea aici."
+  },
+  "footer": {
+    "tagline": "Scrieți împreună. Citiți împreună. Dezvoltați povești capitol cu capitol.",
+    "explore": "Explorează",
+    "legal": "Legal",
+    "support": "Suport",
+    "stories": "Povești",
+    "newStory": "Poveste nouă",
+    "myProfile": "Profilul meu",
+    "about": "Despre",
+    "privacyPolicy": "Politica de confidențialitate",
+    "termsOfService": "Termeni și condiții",
+    "cookiesStorage": "Cookie-uri și stocare",
+    "contactUs": "Contact",
+    "helpFaq": "Ajutor și întrebări frecvente",
+    "reportContent": "Raportează conținut",
+    "copyright": "© {{year}} Storyteller. Toate drepturile rezervate.",
+    "academicNote": "Proiect academic — platformă de scriere colaborativă."
+  },
+  "auth": {
+    "layout": {
+      "tagline": "Citește, scrie și împărtășește povești"
+    },
+    "signIn": {
+      "title": "Autentificare",
+      "email": "Email",
+      "password": "Parolă",
+      "forgotPassword": "Ai uitat parola?",
+      "submit": "Autentificare",
+      "noAccount": "Nu ai cont?",
+      "createOne": "Creează unul",
+      "emailInvalid": "Introdu o adresă de email validă.",
+      "passwordMin": "Parola trebuie să aibă cel puțin 8 caractere.",
+      "invalidCredentials": "Email sau parolă incorectă."
+    },
+    "register": {
+      "title": "Creează cont",
+      "firstName": "Prenume",
+      "lastName": "Nume",
+      "authorName": "Nume de autor",
+      "authorNameHint": "Pseudonimul tău public — trebuie să fie unic.",
+      "email": "Email",
+      "password": "Parolă",
+      "passwordHint": "Cel puțin 8 caractere.",
+      "submit": "Înregistrare",
+      "hasAccount": "Ai deja cont?",
+      "signIn": "Autentifică-te",
+      "failed": "Înregistrarea a eșuat. Încearcă din nou."
+    },
+    "forgotPassword": {
+      "title": "Parolă uitată",
+      "instructions": "Introdu emailul și îți trimitem un link pentru resetarea parolei.",
+      "email": "Email",
+      "submit": "Trimite link de resetare",
+      "backToSignIn": "Înapoi la autentificare",
+      "error": "Ceva nu a mers bine. Încearcă din nou."
+    },
+    "resetPassword": {
+      "title": "Setează parola nouă",
+      "invalidLink": "Acest link de resetare este invalid. Solicită unul nou.",
+      "requestNewLink": "Solicită un link nou",
+      "password": "Parolă nouă",
+      "confirmPassword": "Confirmă parola",
+      "submit": "Actualizează parola",
+      "passwordsMismatch": "Parolele nu coincid.",
+      "failed": "Nu s-a putut reseta parola. Linkul poate fi expirat."
+    }
+  },
+  "dashboard": {
+    "searchPlaceholder": "Caută titlu, autor sau conținut",
+    "filterByAuthor": "Filtrează după autor",
+    "filterByCategory": "Filtrează după categorie",
+    "favoritesOnly": "Arată doar poveștile favorite",
+    "matchingSearch": "care corespund căutării",
+    "list": "Listă",
+    "grid": "Grilă",
+    "activeFilters": "Filtre active:",
+    "searchChip": "Căutare: \"{{query}}\"",
+    "authorChip": "Autor: {{author}}",
+    "favoriteStoriesChip": "Povești favorite",
+    "resetFilters": "Resetează filtrele",
+    "removeSearchFilter": "Elimină filtrul de căutare",
+    "removeFavoriteFilter": "Elimină filtrul de povești favorite",
+    "removeAuthorFilter": "Elimină filtrul de autor {{author}}",
+    "removeCategoryFilter": "Elimină filtrul de categorie {{category}}",
+    "myStories": "Poveștile mele",
+    "favoriteAuthors": "Autori favoriți",
+    "otherAuthors": "Alți autori",
+    "loadingStories": "Se încarcă poveștile...",
+    "loadError": "Nu s-au putut încărca poveștile. Reîmprospătează pagina.",
+    "noMatch": "Nicio poveste nu corespunde filtrelor.",
+    "empty": "Încă nu există povești. Creează prima cu Poveste nouă.",
+    "resultsFound": "Găsite {{count}} {{noun}}",
+    "resultsShowing": "Se afișează {{count}} {{noun}}",
+    "story": "poveste",
+    "stories": "povești",
+    "favoriteAuthor": "Marchează autorul ca favorit",
+    "favoriteStory": "Marchează povestea ca favorită",
+    "openStory": "Deschide povestea",
+    "deleteStory": {
+      "header": "Șterge povestea",
+      "message": "Sigur vrei să ștergi această poveste? Acțiunea nu poate fi anulată."
+    }
+  },
+  "newStory": {
+    "title": "Începe o poveste nouă",
+    "storyTitle": "Titlu",
+    "titlePlaceholder": "Dă-i un titlu poveștii",
+    "titleRequired": "Titlul este obligatoriu.",
+    "categories": "Categorii",
+    "categoriesPlaceholder": "Selectează una sau mai multe categorii",
+    "searchCategories": "Caută categorii",
+    "categoriesRequired": "Selectează cel puțin o categorie.",
+    "layout": "Layout",
+    "openingWriting": "Primul fragment",
+    "imageHint": "Imaginea este opțională. JPG, PNG sau WebP, max. 8 MB.",
+    "changeImage": "Schimbă imaginea",
+    "uploadImage": "Încarcă imagine (opțional)",
+    "contentPlaceholder": "Scrie prima parte a poveștii...",
+    "contentRequired": "Primul fragment este obligatoriu.",
+    "saveStory": "Salvează povestea",
+    "createError": "Nu s-a putut crea povestea. Încearcă din nou."
+  },
+  "writingAssist": {
+    "title": "Asistent de scriere (AI)",
+    "hint": "Sugestii bazate pe povestea existentă — nu înlocuiesc textul tău. Conținutul generat rămâne al tău după editare.",
+    "suggestion": "Sugestie de continuare",
+    "game": "Mic joc creativ",
+    "loading": "Se generează...",
+    "useInDraft": "Folosește în ciornă",
+    "dismiss": "Închide",
+    "toggle": "Ai nevoie de inspirație? Deschide asistentul AI",
+    "error": "Asistentul nu este disponibil momentan. Încearcă din nou."
+  },
+  "storyDetails": {
+    "favoriteAuthor": "Marchează autorul ca favorit",
+    "writingIllustration": "Ilustrație fragment",
+    "continueStory": "Continuă povestea",
+    "favoriteStory": "Marchează povestea ca favorită",
+    "printStory": "Tipărește povestea",
+    "shareStory": "Distribuie povestea",
+    "ownerActions": "Acțiuni proprietar poveste",
+    "deleteStory": "Șterge povestea",
+    "writingPreview": "Previzualizare imagine fragment",
+    "continuePlaceholder": "Continuă povestea...",
+    "removeImage": "Elimină imaginea",
+    "addThoughts": "Adaugă gândurile tale",
+    "commentPlaceholder": "Împărtășește gândurile tale despre această poveste...",
+    "whatOthersThink": "Ce cred ceilalți",
+    "noComments": "Încă nu există comentarii. Fii primul care își împărtășește gândurile.",
+    "noRelevantComments": "Nu ai apreciat sau reacționat la niciun comentariu la această poveste.",
+    "noFilterMatch": "Niciun comentariu nu corespunde acestui filtru.",
+    "commentRecent": "Cele mai recente",
+    "commentOldest": "Cele mai vechi",
+    "commentRelevant": "Relevante",
+    "commentEmptySubmit": "Scrie ceva înainte de a trimite.",
+    "storyNotFound": "Povestea nu a fost găsită.",
+    "commentPostError": "Nu s-a putut publica comentariul.",
+    "commentEmpty": "Comentariul nu poate fi gol.",
+    "commentUpdateError": "Nu s-a putut actualiza comentariul.",
+    "commentDeleteError": "Nu s-a putut șterge comentariul.",
+    "commentLikeError": "Nu s-a putut actualiza aprecierea.",
+    "commentReactionError": "Nu s-a putut adăuga reacția.",
+    "deleteComment": {
+      "header": "Șterge comentariul",
+      "message": "Ștergi acest comentariu?"
+    },
+    "deleteStory": {
+      "header": "Șterge povestea",
+      "message": "Sigur vrei să ștergi această poveste? Acțiunea nu poate fi anulată."
+    },
+    "commentsLabel": {
+      "relevantOne": "Se afișează 1 comentariu la care ai reacționat",
+      "relevantMany": "Se afișează {{count}} comentarii la care ai reacționat",
+      "oldest": "Sortate de la cele mai vechi",
+      "recent": "Sortate de la cele mai recente",
+      "partial": "Se afișează {{visible}} din {{total}}"
+    },
+    "typingOne": "{{author}} scrie",
+    "typingTwo": "{{first}} și {{second}} scriu",
+    "typingMany": "Mai multe persoane scriu",
+    "writingEmpty": "Scrie ceva înainte de a salva.",
+    "writingSaveError": "Fragment salvat, dar imaginea nu a putut fi încărcată.",
+    "writingImageSlot": "Adaugă o imagine pentru a completa această parte a layout-ului",
+    "react": "Reacție",
+    "shareCopied": "Link copiat în clipboard."
+  },
+  "profile": {
+    "eyebrow": "Profil Storyteller",
+    "changePhoto": "Schimbă fotografia de profil",
+    "removePhoto": "Elimină fotografia de profil",
+    "levelLabel": "Nivel {{level}} – {{title}}",
+    "xpToNext": "{{current}} / {{max}} XP până la {{next}}",
+    "storiesWritten": "Povești scrise",
+    "storiesXp": "+50 XP fiecare",
+    "contributions": "Contribuții",
+    "contributionsXp": "+20 XP fiecare",
+    "comments": "Comentarii",
+    "commentsXp": "+10 XP fiecare",
+    "activityTitle": "Puls de activitate",
+    "activitySubtitle": "Povești, contribuții și comentarii în timp",
+    "activity7days": "Ultimele 7 zile",
+    "activity6weeks": "Ultimele 6 săptămâni",
+    "myStories": "Poveștile mele",
+    "myContributions": "Contribuțiile mele",
+    "favoriteAuthors": "Autori favoriți",
+    "favoriteStories": "Povești favorite",
+    "storiesIFollow": "Povești pe care le urmăresc",
+    "noPreview": "Încă nu există previzualizare.",
+    "noOwnStories": "Începe prima ta poveste pentru a ajunge la Nivel 2 – Povestitor.",
+    "noContributions": "Alătură-te poveștii altcuiva și adaugă un capitol.",
+    "viewStories": "Vezi poveștile",
+    "removeFavoriteAuthor": "Elimină din favoriți",
+    "noFavoriteAuthors": "Marchează un autor ca favorit de pe orice card de poveste din panou pentru a-l vedea aici.",
+    "storyYouLove": "O poveste pe care o iubești.",
+    "noFavoriteStories": "Apasă inima pe orice poveste pentru a o salva aici.",
+    "joinedConversation": "Te-ai alăturat conversației aici.",
+    "noFollowedStories": "Lasă un comentariu la o poveste pentru a o urmări aici.",
+    "loadError": "Nu s-a putut încărca panoul de profil. Încearcă din nou.",
+    "avatarUploadError": "Nu s-a putut încărca fotografia. Folosește JPG, PNG sau WebP, max. 2 MB.",
+    "avatarRemoveError": "Nu s-a putut elimina fotografia de profil.",
+    "favoriteAuthorRemoveError": "Nu s-a putut elimina acest autor favorit."
+  },
+  "writingLayout": {
+    "ariaLabel": "Layout fragment",
+    "stack": {
+      "label": "Imagine deasupra, text dedesubt",
+      "short": "Sus / jos"
+    },
+    "image_left_50": {
+      "label": "Imagine stânga 50%, text dreapta 50%",
+      "short": "50 / 50"
+    },
+    "image_left_30": {
+      "label": "Imagine stânga 30%, text dreapta 70%",
+      "short": "30 / 70"
+    },
+    "text_left_70": {
+      "label": "Text stânga 70%, imagine dreapta 30%",
+      "short": "70 / 30"
+    }
+  },
+  "news": {
+    "someone": "Cineva",
+    "aStory": "o poveste",
+    "contributionOnMyStory": "{{actor}} a adăugat un capitol la povestea ta „{{title}}”",
+    "commentOnMyStory": "{{actor}} a comentat la povestea ta „{{title}}”",
+    "contributionOnFollowedStory": "{{actor}} a continuat povestea „{{title}}” pe care o urmărești",
+    "commentOnFollowedStory": "{{actor}} a comentat la povestea „{{title}}” pe care o urmărești",
+    "favoriteAuthorNewStory": "{{actor}} a publicat o poveste nouă: „{{title}}”",
+    "genericUpdate": "Actualizare la „{{title}}”"
+  },
+  "categories": {
+    "fantasy": "Fantezie",
+    "scienceFiction": "Science Fiction",
+    "mysteryThriller": "Mister și thriller",
+    "romance": "Romantism",
+    "horror": "Horror",
+    "historicalFiction": "Ficțiune istorică",
+    "adventure": "Aventură",
+    "biography": "Biografie",
+    "memoir": "Memoir",
+    "selfHelp": "Dezvoltare personală",
+    "travel": "Călătorii",
+    "trueCrime": "True crime",
+    "scienceTechnology": "Știință și tehnologie",
+    "history": "Istorie",
+    "politics": "Politică",
+    "business": "Afaceri",
+    "sports": "Sport",
+    "entertainment": "Divertisment",
+    "health": "Sănătate",
+    "opinionEssays": "Opinii și eseuri",
+    "socialIssues": "Probleme sociale",
+    "inspirational": "Inspirațional",
+    "fanFiction": "Fan fiction",
+    "childrenStories": "Povești pentru copii",
+    "youngAdult": "Young adult"
+  },
+  "levels": {
+    "inkling": "Începător",
+    "storyteller": "Povestitor",
+    "wordsmith": "Meșter al cuvintelor",
+    "sagaKeeper": "Păstrător de saga",
+    "grandChronicler": "Mare cronicar"
+  },
+  "info": {
+    "about": {
+      "title": "Despre Storyteller",
+      "intro": "Storyteller este o platformă de scriere colaborativă unde autorii creează povești împreună, capitol cu capitol.",
+      "sections": {
+        "whatYouCanDo": {
+          "heading": "Ce poți face",
+          "paragraphs": [
+            "Explorează și descoperă povești din comunitate, începe propria narațiune sau contribuie la povești în curs.",
+            "Urmărește activitatea pe panoul de profil, marchează autori și povești favorite și filtrează conținutul după categorie sau autor."
+          ]
+        },
+        "communityWriting": {
+          "heading": "Scriere în comunitate",
+          "paragraphs": [
+            "Fiecare poveste crește prin fragmente și comentarii de la mai mulți contribuitori. Indicatorii de tastare în timp real arată când alții adaugă la o poveste."
+          ]
+        }
+      }
+    },
+    "privacy": {
+      "title": "Politica de confidențialitate",
+      "intro": "Ultima actualizare: iunie 2026. Această politică explică cum Storyteller colectează, folosește și protejează informațiile tale.",
+      "sections": {
+        "informationWeCollect": {
+          "heading": "Informații pe care le colectăm",
+          "paragraphs": [
+            "La înregistrare colectăm numele, adresa de email și numele public de autor. Stocăm și poveștile, fragmentele, comentariile și favoritele legate de contul tău.",
+            "Folosim token-uri de autentificare stocate local în browser pentru a te menține autentificat."
+          ]
+        },
+        "howWeUseData": {
+          "heading": "Cum folosim datele",
+          "paragraphs": [
+            "Datele tale sunt folosite pentru a oferi serviciul: afișarea poveștilor, atribuirea contribuțiilor, personalizarea panoului și securizarea contului.",
+            "Nu vindem informațiile tale personale către terți."
+          ]
+        },
+        "cookies": {
+          "heading": "Cookie-uri și stocare locală",
+          "paragraphs": [
+            "Storyteller folosește cookie-uri esențiale și stocare în browser pentru sesiunile de autentificare (token-uri JWT access și refresh). Acestea sunt necesare pentru funcționarea aplicației."
+          ]
+        },
+        "yourRights": {
+          "heading": "Drepturile tale",
+          "paragraphs": [
+            "Poți solicita acces, corectare sau ștergerea datelor contului contactându-ne. Te poți deconecta oricând pentru a șterge token-urile de sesiune de pe dispozitiv."
+          ]
+        }
+      }
+    },
+    "terms": {
+      "title": "Termeni și condiții",
+      "intro": "Folosind Storyteller, accepți următorii termeni. Te rugăm să îi citești cu atenție.",
+      "sections": {
+        "acceptableUse": {
+          "heading": "Utilizare acceptabilă",
+          "paragraphs": [
+            "Trebuie să furnizezi informații corecte la înregistrare și să îți păstrezi credențialele în siguranță. Ești responsabil pentru conținutul pe care îl publici sub numele tău de autor.",
+            "Nu posta conținut ilegal, hărțuitor sau care încalcă drepturi. Putem elimina conținut sau suspenda conturi care încalcă acești termeni."
+          ]
+        },
+        "contentOwnership": {
+          "heading": "Proprietatea conținutului",
+          "paragraphs": [
+            "Păstrezi drepturile asupra textului original pe care îl trimiți. Prin publicare pe Storyteller acorzi platformei o licență neexclusivă de afișare și stocare pentru funcționarea serviciului.",
+            "Segmentele colaborative pot combina contribuții de la mai mulți utilizatori; fiecare contribuitor deține fragmentul său."
+          ]
+        },
+        "serviceAvailability": {
+          "heading": "Disponibilitatea serviciului",
+          "paragraphs": [
+            "Storyteller este oferit ca atare în timpul dezvoltării și utilizării academice. Nu garantăm disponibilitate neîntreruptă, dar ne străduim să oferim o experiență fiabilă."
+          ]
+        },
+        "changes": {
+          "heading": "Modificări",
+          "paragraphs": [
+            "Putem actualiza acești termeni din când în când. Utilizarea continuă a serviciului după modificări constituie acceptarea termenilor actualizați."
+          ]
+        }
+      }
+    },
+    "contact": {
+      "title": "Contact și suport",
+      "intro": "Ai nevoie de ajutor sau feedback? Contactează echipa Storyteller.",
+      "sections": {
+        "generalInquiries": {
+          "heading": "Întrebări generale",
+          "paragraphs": [
+            "Pentru întrebări despre cont, povești sau platformă, scrie-ne la support@storyteller.app."
+          ]
+        },
+        "reportProblem": {
+          "heading": "Raportează o problemă",
+          "paragraphs": [
+            "Dacă întâmpini un bug sau conținut nepotrivit, include o descriere, linkul poveștii dacă e cazul și capturi de ecran când e posibil."
+          ]
+        },
+        "privacyRequests": {
+          "heading": "Solicitări de confidențialitate",
+          "paragraphs": [
+            "Pentru acces sau ștergere date legate de confidențialitate, contactează privacy@storyteller.app cu adresa de email asociată contului."
+          ]
+        }
+      }
+    }
+  }
+}

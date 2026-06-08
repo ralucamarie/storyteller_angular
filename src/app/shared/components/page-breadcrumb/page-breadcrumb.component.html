@@ -1,0 +1,11 @@
+<nav class="page-breadcrumb" [attr.aria-label]="'common.breadcrumb' | translate">
+  <p-breadcrumb [model]="breadcrumbModel()" styleClass="page-breadcrumb__trail">
+    <ng-template #item let-item>
+      @if (item.routerLink) {
+        <a [routerLink]="item.routerLink" class="page-breadcrumb__link">{{ item.label }}</a>
+      } @else {
+        <span class="page-breadcrumb__current">{{ item.label }}</span>
+      }
+    </ng-template>
+  </p-breadcrumb>
+</nav>

@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
+import { provideTranslateService } from '@ngx-translate/core';
 
 import { FooterComponent } from './footer.component';
 
@@ -8,7 +10,11 @@ describe('FooterComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FooterComponent]
+      imports: [FooterComponent],
+      providers: [
+        provideRouter([]),
+        provideTranslateService({ fallbackLang: 'ro' }),
+      ],
     })
     .compileComponents();
 
