@@ -29,9 +29,9 @@ import { StoryService } from '../../../../core/services/story.service';
 import { formatCategory } from '../../../../core/utils/category-format.utils';
 import {
   resolveAvatarUrl,
-  resolveWritingImageUrl,
   withCacheBust,
 } from '../../../../core/utils/media.utils';
+import { extractFirstImageUrl, writingPreviewText } from '../../../../core/utils/writing-html.utils';
 import { getFirstWriting } from '../../../../core/utils/writing.utils';
 import { AuthorFavoriteIconComponent } from '../../../../shared/components/author-favorite-icon/author-favorite-icon.component';
 
@@ -83,9 +83,14 @@ export class StoryOverviewComponent {
 
   readonly firstWriting = computed(() => getFirstWriting(this.story()));
 
+  readonly writingExcerpt = computed(() => writingPreviewText(this.firstWriting()?.text));
+
   readonly coverImageUrl = computed(() => {
     const firstWriting = this.firstWriting();
-    const url = resolveWritingImageUrl(firstWriting);
+    const url = extractFirstImageUrl(
+      firstWriting?.text ?? null,
+      firstWriting?.imageUrl ?? firstWriting?.image_url ?? null
+    );
     return withCacheBust(
       url,
       firstWriting?.imageUpdated ?? firstWriting?.image_updated ?? null

@@ -33,6 +33,7 @@ export class Story implements IStory {
   author: User | null = null;
   author_name: string | null = null;
   categories: Array<Category> = [];
+  categoryObjects?: Array<Category>;
   writings: Array<Writing> = [];
   comments: Array<Comment> = [];
   createdAt: string | null = null;

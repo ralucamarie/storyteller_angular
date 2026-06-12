@@ -1,0 +1,67 @@
+@if (uploadError()) {
+  <p-message severity="error" [text]="uploadError()!" styleClass="w-full mb-2" />
+}
+
+<input
+  #fileInput
+  type="file"
+  accept="image/jpeg,image/png,image/webp"
+  hidden
+  (change)="onImageSelected($event)" />
+
+<p-editor
+  [ngModel]="value"
+  (ngModelChange)="onModelChange($event)"
+  (onTextChange)="onTextChange($event)"
+  (onBlur)="onBlur()"
+  (onInit)="onEditorInit($event)"
+  [readonly]="disabled"
+  [placeholder]="placeholder()"
+  [style]="editorStyle()"
+  [attr.id]="inputId() ?? null">
+  <ng-template #header>
+    <span class="ql-formats">
+      <select class="ql-header">
+        <option selected value="">Normal</option>
+        <option value="2">Heading</option>
+        <option value="3">Subheading</option>
+      </select>
+    </span>
+    <span class="ql-formats">
+      <button type="button" class="ql-bold" [attr.aria-label]="'writingEditor.bold' | translate"></button>
+      <button type="button" class="ql-italic" [attr.aria-label]="'writingEditor.italic' | translate"></button>
+      <button type="button" class="ql-underline" [attr.aria-label]="'writingEditor.underline' | translate"></button>
+    </span>
+    <span class="ql-formats">
+      <button type="button" class="ql-list" value="ordered" [attr.aria-label]="'writingEditor.orderedList' | translate"></button>
+      <button type="button" class="ql-list" value="bullet" [attr.aria-label]="'writingEditor.bulletList' | translate"></button>
+      <button type="button" class="ql-blockquote" [attr.aria-label]="'writingEditor.blockquote' | translate"></button>
+    </span>
+    <span class="ql-formats">
+      <button
+        type="button"
+        class="writing-editor__image-btn"
+        [disabled]="disabled || uploadingImage()"
+        [attr.aria-label]="'writingEditor.imageBlock' | translate"
+        (click)="requestImage('block')">
+        <i class="pi pi-image"></i>
+      </button>
+      <button
+        type="button"
+        class="writing-editor__image-btn"
+        [disabled]="disabled || uploadingImage()"
+        [attr.aria-label]="'writingEditor.imageLeft' | translate"
+        (click)="requestImage('left')">
+        <i class="pi pi-align-left"></i>
+      </button>
+      <button
+        type="button"
+        class="writing-editor__image-btn"
+        [disabled]="disabled || uploadingImage()"
+        [attr.aria-label]="'writingEditor.imageRight' | translate"
+        (click)="requestImage('right')">
+        <i class="pi pi-align-right"></i>
+      </button>
+    </span>
+  </ng-template>
+</p-editor>

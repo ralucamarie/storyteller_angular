@@ -76,19 +76,21 @@
 
           styleClass="w-full new-story__categories"
 
+          appendTo="self"
+
           [filter]="true">
 
           <ng-template let-category #item>
 
             <p-tag
 
-              [value]="(category.name | categoryFormat).label"
+              [value]="category.label"
 
               [rounded]="true"
 
               [styleClass]="'category-tag'"
 
-              [style]="{'background-color': (category.name | categoryFormat).color}" />
+              [style]="{'background-color': categoryColor(category.name)}" />
 
           </ng-template>
 
@@ -104,25 +106,11 @@
 
 
 
-      <div class="flex flex-col gap-2">
-
-        <label class="font-semibold">{{ 'newStory.layout' | translate }}</label>
-
-        <app-writing-layout-picker
-
-          [value]="selectedLayout()"
-
-          (valueChange)="selectedLayout.set($event)" />
-
-      </div>
-
-
-
       <div class="flex flex-col gap-2 new-story__writing-section">
 
         <label for="content" class="font-semibold">{{ 'newStory.openingWriting' | translate }}</label>
 
-        <small class="text-surface-500">{{ 'newStory.imageHint' | translate }}</small>
+        <small class="text-surface-500">{{ 'newStory.editorHint' | translate }}</small>
 
         <div class="new-story__assist-section" [class.new-story__assist-section--open]="showAssist()">
 
@@ -164,75 +152,15 @@
 
         </div>
 
-        <div class="writing-composer" [class]="'writing-composer--' + selectedLayout()">
+        <app-writing-rich-editor
 
-          @if (imagePreview()) {
+          inputId="content"
 
-            <figure class="writing-composer__media new-story__media-preview">
+          formControlName="content"
 
-              <img [src]="imagePreview()!" [attr.alt]="'newStory.changeImage' | translate" />
+          [placeholder]="'newStory.contentPlaceholder' | translate"
 
-              <label class="new-story__media-change">
-
-                <i class="pi pi-image"></i>
-
-                <span>{{ 'newStory.changeImage' | translate }}</span>
-
-                <input
-
-                  type="file"
-
-                  accept="image/jpeg,image/png,image/webp"
-
-                  hidden
-
-                  (change)="onImageSelected($event)" />
-
-              </label>
-
-            </figure>
-
-          } @else {
-
-            <label class="writing-composer__media-placeholder new-story__media-upload">
-
-              <i class="pi pi-image"></i>
-
-              <span>{{ 'newStory.uploadImage' | translate }}</span>
-
-              <input
-
-                type="file"
-
-                accept="image/jpeg,image/png,image/webp"
-
-                hidden
-
-                (change)="onImageSelected($event)" />
-
-            </label>
-
-          }
-
-          <textarea
-
-            id="content"
-
-            rows="12"
-
-            class="writing-composer__text w-full"
-
-            pTextarea
-
-            [autoResize]="true"
-
-            formControlName="content"
-
-            [placeholder]="'newStory.contentPlaceholder' | translate">
-
-          </textarea>
-
-        </div>
+          [editorStyle]="{ 'min-height': '18rem' }" />
 
         @if (form.controls.content.touched && form.controls.content.invalid) {
 
@@ -265,4 +193,3 @@
   </p-card>
 
 </div>
-

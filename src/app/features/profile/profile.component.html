@@ -27,7 +27,6 @@
             [image]="profileAvatarUrl() ?? undefined"
             [label]="!profileAvatarUrl() ? (data.user.author_name?.charAt(0)?.toUpperCase() ?? '?') : undefined"
             shape="circle"
-            size="xlarge"
             styleClass="profile-hero__avatar" />
           <label class="profile-hero__avatar-upload" [pTooltip]="'profile.changePhoto' | translate">
             <i class="pi pi-camera"></i>

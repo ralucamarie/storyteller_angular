@@ -1,4 +1,4 @@
-import { inject, Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import {
   categoryTranslationKey,
@@ -11,7 +11,7 @@ import {
   pure: false,
 })
 export class CategoryFormatPipe implements PipeTransform {
-  private readonly translate = inject(TranslateService);
+  constructor(private readonly translate: TranslateService) {}
 
   transform(value: string | null): ReturnType<typeof formatCategory> {
     if (!value) {

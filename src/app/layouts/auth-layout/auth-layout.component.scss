@@ -10,3 +10,47 @@
     var(--p-surface-100) 100%
   );
 }
+
+.auth-brand {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.auth-brand__icon {
+  width: 3.5rem;
+  height: 3.5rem;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.auth-brand__name {
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1;
+  color: #0f766e;
+  white-space: nowrap;
+}
+
+.auth-brand__tld {
+  color: #f59e0b;
+  font-weight: 700;
+}
+
+@media (max-width: 480px) {
+  .auth-brand {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .auth-brand__name {
+    font-size: 1.35rem;
+  }
+
+  .auth-brand__icon {
+    width: 3rem;
+    height: 3rem;
+  }
+}

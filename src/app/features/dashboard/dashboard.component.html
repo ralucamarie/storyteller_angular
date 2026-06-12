@@ -1,192 +1,193 @@
-<p-confirmdialog />
-<div class="dashboard">
-  <div class="dashboard__filters">
-    <section class="dashboard-filters">
-      <p-iconfield iconPosition="left" class="dashboard-filters__search">
-        <p-inputicon styleClass="pi pi-search" />
-        <input
-          type="text"
-          pInputText
-          [placeholder]="'dashboard.searchPlaceholder' | translate"
-          [(ngModel)]="storyFilter.text"
-          (ngModelChange)="filterStories()" />
-      </p-iconfield>
-
-      <p-multiselect
-        class="dashboard-filters__authors"
-        [options]="authors"
-        [group]="true"
-        [(ngModel)]="storyFilter.authors"
-        (ngModelChange)="filterStories()"
-        [placeholder]="'dashboard.filterByAuthor' | translate"
-        display="chip"
-        optionLabel="label"
-        optionValue="value"
-        optionGroupLabel="label"
-        optionGroupChildren="items"
-        styleClass="dashboard-filters__control">
-        <ng-template let-author #item>
-          <span>{{ author.label }}</span>
-        </ng-template>
-      </p-multiselect>
-
-      <p-multiselect
-        class="dashboard-filters__categories"
-        [options]="categories"
-        [(ngModel)]="storyFilter.categories"
-        (ngModelChange)="filterStories()"
-        [placeholder]="'dashboard.filterByCategory' | translate"
-        display="chip"
-        optionLabel="name"
-        styleClass="dashboard-filters__control">
-        <ng-template let-category #item>
-          <div class="flex items-center gap-2">
-            <p-tag
-              [value]="(category.name | categoryFormat).label"
-              [rounded]="true"
-              [styleClass]="'category-tag'"
-              [style]="{'background-color': (category.name | categoryFormat).color}">
-            </p-tag>
-          </div>
-        </ng-template>
-      </p-multiselect>
-
-      <p-button
-        class="dashboard-filters__favorites"
-        [icon]="showOnlyFavorites ? 'pi pi-heart-fill' : 'pi pi-heart'"
-        [severity]="showOnlyFavorites ? 'danger' : 'secondary'"
-        [rounded]="true"
-        [outlined]="!showOnlyFavorites"
-        [pTooltip]="'dashboard.favoritesOnly' | translate"
-        tooltipPosition="bottom"
-        (onClick)="toggleFavoritesFilter()" />
-    </section>
-  </div>
-
-  <div class="dashboard__results">
-    <div class="dashboard__results-info">
-      <span class="dashboard__results-label">{{ resultsLabel() }}</span>
-      @if (isSearchActive()) {
-        <span class="dashboard__results-hint">{{ 'dashboard.matchingSearch' | translate }}</span>
-      }
-    </div>
-    <p-selectButton
-      class="dashboard__view-toggle"
-      [options]="storyViewOptions()"
-      [(ngModel)]="storyViewMode"
-      optionLabel="label"
-      optionValue="value">
-      <ng-template let-item pTemplate="item">
-        <i [class]="item.icon" aria-hidden="true"></i>
-        <span class="dashboard__view-toggle-label">{{ item.label }}</span>
-      </ng-template>
-    </p-selectButton>
-  </div>
-
-  @if (hasActiveFilters()) {
-    <div class="dashboard__active-filters">
-      <span class="dashboard__active-filters-label">{{ 'dashboard.activeFilters' | translate }}</span>
-
-      @if (storyFilter.text.trim()) {
-        <span class="filter-chip">
-          <span class="filter-chip__text">{{
-            'dashboard.searchChip' | translate: { query: storyFilter.text.trim() }
-          }}</span>
-          <button
-            type="button"
-            class="filter-chip__remove"
-            [attr.aria-label]="'dashboard.removeSearchFilter' | translate"
-            (click)="removeSearchFilter()">
-            <i class="pi pi-times"></i>
-          </button>
-        </span>
-      }
-
-      @for (author of storyFilter.authors; track author) {
-        <span class="filter-chip">
-          <span class="filter-chip__text">{{
-            'dashboard.authorChip' | translate: { author: authorFilterLabel(author) }
-          }}</span>
-          <button
-            type="button"
-            class="filter-chip__remove"
-            [attr.aria-label]="
-              'dashboard.removeAuthorFilter' | translate: { author: authorFilterLabel(author) }
-            "
-            (click)="removeAuthorFilter(author)">
-            <i class="pi pi-times"></i>
-          </button>
-        </span>
-      }
-
-      @for (category of storyFilter.categories; track category.id ?? category.name) {
-        <span class="filter-chip">
-          <p-tag
-            [value]="(category.name | categoryFormat).label"
-            [rounded]="true"
-            [styleClass]="'category-tag filter-chip__tag'"
-            [style]="{'background-color': (category.name | categoryFormat).color}" />
-          <button
-            type="button"
-            class="filter-chip__remove"
-            [attr.aria-label]="
-              'dashboard.removeCategoryFilter'
-                | translate: { category: (category.name | categoryFormat).label }
-            "
-            (click)="removeCategoryFilter(category)">
-            <i class="pi pi-times"></i>
-          </button>
-        </span>
-      }
-
-      @if (showOnlyFavorites) {
-        <span class="filter-chip filter-chip--favorites">
-          <span class="filter-chip__text"
-            ><i class="pi pi-heart-fill"></i> {{ 'dashboard.favoriteStoriesChip' | translate }}</span
-          >
-          <button
-            type="button"
-            class="filter-chip__remove"
-            [attr.aria-label]="'dashboard.removeFavoriteFilter' | translate"
-            (click)="removeFavoritesFilter()">
-            <i class="pi pi-times"></i>
-          </button>
-        </span>
-      }
-
-      <button type="button" class="dashboard__reset-filters" (click)="resetAllFilters()">
-        {{ 'dashboard.resetFilters' | translate }}
-      </button>
-    </div>
-  }
-
-  <div class="dashboard__scroll thin-scrollbar">
-    @if (loadingStories) {
-      <p class="empty-results">{{ 'dashboard.loadingStories' | translate }}</p>
-    } @else if (loadError) {
-      <p class="empty-results">{{ loadError }}</p>
-    } @else if (filteredStories.length) {
-      <div
-        class="dashboard__story-list"
-        [class.dashboard__story-list--grid]="storyViewMode === 'grid'">
-        @for (story of filteredStories; track story.id) {
-          <app-story-overview
-            [story]="story"
-            [layout]="storyViewMode"
-            [isFavorite]="isFavoriteStory(story)"
-            [isFavoriteAuthor]="isFavoriteAuthor(story)"
-            (favoriteChanged)="onFavoriteChanged($event.storyId, $event.favorited)"
-            (authorFavoriteChanged)="
-              onAuthorFavoriteChanged($event.authorId, $event.favorited, $event.authorName)
-            "
-            (storyDeleted)="onStoryDeleted($event)" />
-        }
-      </div>
-    } @else if (stories.length) {
-      <p class="empty-results">{{ 'dashboard.noMatch' | translate }}</p>
-    } @else {
-      <p class="empty-results">{{ 'dashboard.empty' | translate }}</p>
-    }
-  </div>
-</div>
+<p-confirmdialog />
+<div class="dashboard">
+  <div class="dashboard__filters">
+    <section class="dashboard-filters">
+      <p-iconfield iconPosition="left" class="dashboard-filters__search">
+        <p-inputicon styleClass="pi pi-search" />
+        <input
+          type="text"
+          pInputText
+          [placeholder]="'dashboard.searchPlaceholder' | translate"
+          [(ngModel)]="storyFilter.text"
+          (ngModelChange)="filterStories()" />
+      </p-iconfield>
+
+      <p-multiselect
+        class="dashboard-filters__authors"
+        [options]="authors"
+        [group]="true"
+        [(ngModel)]="storyFilter.authors"
+        (ngModelChange)="filterStories()"
+        [placeholder]="'dashboard.filterByAuthor' | translate"
+        display="chip"
+        optionLabel="label"
+        optionValue="value"
+        optionGroupLabel="label"
+        optionGroupChildren="items"
+        styleClass="dashboard-filters__control">
+        <ng-template let-author #item>
+          <span>{{ author.label }}</span>
+        </ng-template>
+      </p-multiselect>
+
+      <p-multiselect
+        class="dashboard-filters__categories"
+        [options]="categories"
+        [(ngModel)]="storyFilter.categories"
+        (ngModelChange)="filterStories()"
+        [placeholder]="'dashboard.filterByCategory' | translate"
+        display="chip"
+        optionLabel="name"
+        appendTo="self"
+        styleClass="dashboard-filters__control">
+        <ng-template let-category #item>
+          <div class="flex items-center gap-2">
+            <p-tag
+              [value]="(category.name | categoryFormat).label"
+              [rounded]="true"
+              [styleClass]="'category-tag'"
+              [style]="{'background-color': (category.name | categoryFormat).color}">
+            </p-tag>
+          </div>
+        </ng-template>
+      </p-multiselect>
+
+      <p-button
+        class="dashboard-filters__favorites"
+        [icon]="showOnlyFavorites ? 'pi pi-heart-fill' : 'pi pi-heart'"
+        [severity]="showOnlyFavorites ? 'danger' : 'secondary'"
+        [rounded]="true"
+        [outlined]="!showOnlyFavorites"
+        [pTooltip]="'dashboard.favoritesOnly' | translate"
+        tooltipPosition="bottom"
+        (onClick)="toggleFavoritesFilter()" />
+    </section>
+  </div>
+
+  <div class="dashboard__results">
+    <div class="dashboard__results-info">
+      <span class="dashboard__results-label">{{ resultsLabel() }}</span>
+      @if (isSearchActive()) {
+        <span class="dashboard__results-hint">{{ 'dashboard.matchingSearch' | translate }}</span>
+      }
+    </div>
+    <p-selectButton
+      class="dashboard__view-toggle"
+      [options]="storyViewOptions()"
+      [(ngModel)]="storyViewMode"
+      optionLabel="label"
+      optionValue="value">
+      <ng-template let-item pTemplate="item">
+        <i [class]="item.icon" aria-hidden="true"></i>
+        <span class="dashboard__view-toggle-label">{{ item.label }}</span>
+      </ng-template>
+    </p-selectButton>
+  </div>
+
+  @if (hasActiveFilters()) {
+    <div class="dashboard__active-filters">
+      <span class="dashboard__active-filters-label">{{ 'dashboard.activeFilters' | translate }}</span>
+
+      @if (storyFilter.text.trim()) {
+        <span class="filter-chip">
+          <span class="filter-chip__text">{{
+            'dashboard.searchChip' | translate: { query: storyFilter.text.trim() }
+          }}</span>
+          <button
+            type="button"
+            class="filter-chip__remove"
+            [attr.aria-label]="'dashboard.removeSearchFilter' | translate"
+            (click)="removeSearchFilter()">
+            <i class="pi pi-times"></i>
+          </button>
+        </span>
+      }
+
+      @for (author of storyFilter.authors; track author) {
+        <span class="filter-chip">
+          <span class="filter-chip__text">{{
+            'dashboard.authorChip' | translate: { author: authorFilterLabel(author) }
+          }}</span>
+          <button
+            type="button"
+            class="filter-chip__remove"
+            [attr.aria-label]="
+              'dashboard.removeAuthorFilter' | translate: { author: authorFilterLabel(author) }
+            "
+            (click)="removeAuthorFilter(author)">
+            <i class="pi pi-times"></i>
+          </button>
+        </span>
+      }
+
+      @for (category of storyFilter.categories; track category.id ?? category.name) {
+        <span class="filter-chip">
+          <p-tag
+            [value]="(category.name | categoryFormat).label"
+            [rounded]="true"
+            [styleClass]="'category-tag filter-chip__tag'"
+            [style]="{'background-color': (category.name | categoryFormat).color}" />
+          <button
+            type="button"
+            class="filter-chip__remove"
+            [attr.aria-label]="
+              'dashboard.removeCategoryFilter'
+                | translate: { category: (category.name | categoryFormat).label }
+            "
+            (click)="removeCategoryFilter(category)">
+            <i class="pi pi-times"></i>
+          </button>
+        </span>
+      }
+
+      @if (showOnlyFavorites) {
+        <span class="filter-chip filter-chip--favorites">
+          <span class="filter-chip__text"
+            ><i class="pi pi-heart-fill"></i> {{ 'dashboard.favoriteStoriesChip' | translate }}</span
+          >
+          <button
+            type="button"
+            class="filter-chip__remove"
+            [attr.aria-label]="'dashboard.removeFavoriteFilter' | translate"
+            (click)="removeFavoritesFilter()">
+            <i class="pi pi-times"></i>
+          </button>
+        </span>
+      }
+
+      <button type="button" class="dashboard__reset-filters" (click)="resetAllFilters()">
+        {{ 'dashboard.resetFilters' | translate }}
+      </button>
+    </div>
+  }
+
+  <div class="dashboard__scroll thin-scrollbar">
+    @if (loadingStories) {
+      <p class="empty-results">{{ 'dashboard.loadingStories' | translate }}</p>
+    } @else if (loadError) {
+      <p class="empty-results">{{ loadError }}</p>
+    } @else if (filteredStories.length) {
+      <div
+        class="dashboard__story-list"
+        [class.dashboard__story-list--grid]="storyViewMode === 'grid'">
+        @for (story of filteredStories; track story.id) {
+          <app-story-overview
+            [story]="story"
+            [layout]="storyViewMode"
+            [isFavorite]="isFavoriteStory(story)"
+            [isFavoriteAuthor]="isFavoriteAuthor(story)"
+            (favoriteChanged)="onFavoriteChanged($event.storyId, $event.favorited)"
+            (authorFavoriteChanged)="
+              onAuthorFavoriteChanged($event.authorId, $event.favorited, $event.authorName)
+            "
+            (storyDeleted)="onStoryDeleted($event)" />
+        }
+      </div>
+    } @else if (stories.length) {
+      <p class="empty-results">{{ 'dashboard.noMatch' | translate }}</p>
+    } @else {
+      <p class="empty-results">{{ 'dashboard.empty' | translate }}</p>
+    }
+  </div>
+</div>
 

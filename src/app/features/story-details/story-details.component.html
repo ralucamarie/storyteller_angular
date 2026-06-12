@@ -72,11 +72,33 @@
 
     </div>
 
+    @if (storyCategories().length) {
+
+      <div class="story-details__categories">
+
+        @for (category of storyCategories(); track category.name ?? category.id ?? $index) {
+
+          <p-tag
+
+            [value]="(category.name | categoryFormat).label"
+
+            [rounded]="true"
+
+            [styleClass]="'category-tag story-details__category-tag'"
+
+            [style]="{'background-color': (category.name | categoryFormat).color}" />
+
+        }
+
+      </div>
+
+    }
+
   </div>
 
 
 
-  <div>
+  <div class="story-details__writings w-full">
 
     @for (writing of story()?.writings; track writing.id) {
 
@@ -88,123 +110,111 @@
 
         [class.writing-other]="!isMyWriting(writing)">
 
-        <div
+        @let writingHtml = resolveWritingHtml(writing);
 
-          class="writing-block"
+        <div class="writing-block">
 
-          [class]="'writing-block--' + resolveWritingLayout(writing)">
+          <div class="writing-block__content">
 
-          @if (resolveWritingImageUrl(writing); as imageUrl) {
+            <app-writing-content [html]="writingHtml" />
 
-            <figure class="writing-block__media">
+            <span class="writing-avatar-anchor">
 
-              <img [src]="imageUrl" [attr.alt]="'storyDetails.writingIllustration' | translate" loading="lazy" />
+              <p-avatar
 
-            </figure>
+                styleClass="writing-inline-avatar"
 
-          }
+                [image]="writingAuthorAvatarUrl(writing) ?? undefined"
 
-          <p class="writing-block__text text-2xl/10 indent-8">
+                [label]="!writingAuthorAvatarUrl(writing) ? (writingAuthorName(writing).charAt(0).toUpperCase()) : undefined"
 
-          {{ writing.text }}
+                shape="circle"
 
-          <span class="writing-avatar-anchor">
+                [pTooltip]="writingTooltip"
 
-            <p-avatar
+                [tooltipStyleClass]="isMyWriting(writing) ? 'writing-tooltip-mine' : 'writing-tooltip-other'"
 
-              styleClass="writing-inline-avatar"
+                tooltipPosition="right"
 
-              [image]="writingAuthorAvatarUrl(writing) ?? undefined"
+                [autoHide]="false"
 
-              [label]="!writingAuthorAvatarUrl(writing) ? (writingAuthorName(writing).charAt(0).toUpperCase()) : undefined"
+                [hideDelay]="300"
 
-              shape="circle"
+                [showDelay]="120"
 
-              [pTooltip]="writingTooltip"
+                appendTo="body" />
 
-              [tooltipStyleClass]="isMyWriting(writing) ? 'writing-tooltip-mine' : 'writing-tooltip-other'"
+              <ng-template #writingTooltip>
 
-              tooltipPosition="right"
+                <div class="writing-tooltip">
 
-              [autoHide]="false"
+                  <div class="writing-tooltip__author-row">
 
-              [hideDelay]="300"
+                    @if (isMyWriting(writing)) {
 
-              [showDelay]="120"
-
-              appendTo="body" />
-
-            <ng-template #writingTooltip>
-
-              <div class="writing-tooltip">
-
-                <div class="writing-tooltip__author-row">
-
-                  @if (isMyWriting(writing)) {
-
-                    <span class="writing-tooltip__name">{{ 'common.me' | translate }}</span>
-
-                  } @else {
-
-                    @if (writingAuthorQueryParams(writing); as authorParams) {
-
-                      <a
-
-                        class="writing-tooltip__link"
-
-                        [routerLink]="['/dashboard']"
-
-                        [queryParams]="authorParams"
-
-                        (click)="$event.stopPropagation()">
-
-                        {{ writingAuthorName(writing) }}
-
-                      </a>
-
-                      @if (canFavoriteAuthor(writingAuthorId(writing))) {
-
-                        <button
-
-                          type="button"
-
-                          class="story-author-fav-btn story-author-fav-btn--compact"
-
-                          [class.story-author-fav-btn--active]="isAuthorFavorited(writingAuthorId(writing))"
-
-                          (mousedown)="$event.stopPropagation()"
-
-                          (click)="toggleAuthorFavorite($event, writingAuthorId(writing))">
-
-                          <app-author-favorite-icon [active]="isAuthorFavorited(writingAuthorId(writing))" />
-
-                        </button>
-
-                      }
+                      <span class="writing-tooltip__name">{{ 'common.me' | translate }}</span>
 
                     } @else {
 
-                      <span class="writing-tooltip__name">{{ writingAuthorName(writing) }}</span>
+                      @if (writingAuthorQueryParams(writing); as authorParams) {
+
+                        <a
+
+                          class="writing-tooltip__link"
+
+                          [routerLink]="['/dashboard']"
+
+                          [queryParams]="authorParams"
+
+                          (click)="$event.stopPropagation()">
+
+                          {{ writingAuthorName(writing) }}
+
+                        </a>
+
+                        @if (canFavoriteAuthor(writingAuthorId(writing))) {
+
+                          <button
+
+                            type="button"
+
+                            class="story-author-fav-btn story-author-fav-btn--compact"
+
+                            [class.story-author-fav-btn--active]="isAuthorFavorited(writingAuthorId(writing))"
+
+                            (mousedown)="$event.stopPropagation()"
+
+                            (click)="toggleAuthorFavorite($event, writingAuthorId(writing))">
+
+                            <app-author-favorite-icon [active]="isAuthorFavorited(writingAuthorId(writing))" />
+
+                          </button>
+
+                        }
+
+                      } @else {
+
+                        <span class="writing-tooltip__name">{{ writingAuthorName(writing) }}</span>
+
+                      }
 
                     }
+
+                  </div>
+
+                  @if (formatWritingDate(writing.created)) {
+
+                    <span class="writing-tooltip__date">{{ formatWritingDate(writing.created) }}</span>
 
                   }
 
                 </div>
 
-                @if (formatWritingDate(writing.created)) {
+              </ng-template>
 
-                  <span class="writing-tooltip__date">{{ formatWritingDate(writing.created) }}</span>
+            </span>
 
-                }
-
-              </div>
-
-            </ng-template>
-
-          </span>
-
-          </p>
+          </div>
 
         </div>
 
@@ -382,7 +392,7 @@
 
                 [storyId]="storyId"
 
-                [draftText]="newWritingText()"
+                [draftText]="htmlToPlainText(newWritingHtml())"
 
                 (insertText)="onAssistInsert($event)" />
 
@@ -392,125 +402,37 @@
 
           <div class="continue-story-editor__main">
 
-            <div class="continue-story-editor__toolbar">
+            <app-writing-rich-editor
 
-              <span class="continue-story-editor__toolbar-label">{{ 'newStory.layout' | translate }}</span>
+              [scrollable]="true"
 
-              <app-writing-layout-picker
+              [ngModel]="newWritingHtml()"
 
-                [value]="selectedWritingLayout()"
+              (ngModelChange)="onWritingInput($event)"
 
-                (valueChange)="selectedWritingLayout.set($event)" />
+              [placeholder]="'storyDetails.continuePlaceholder' | translate" />
 
-            </div>
+            <div class="continue-story-editor__actions continue-story-editor__actions--solo">
 
-            <div class="continue-story-editor__composer">
+              <p-button
 
-              <div
+                [label]="'common.cancel' | translate"
 
-                class="writing-composer continue-story-editor__writing-composer"
+                severity="secondary"
 
-                [class]="'writing-composer--' + selectedWritingLayout()">
+                text
 
-                @if (writingImagePreview()) {
+                (onClick)="cancelWritingEditor()" />
 
-                  <figure class="writing-composer__media">
+              <p-button
 
-                    <img [src]="writingImagePreview()!" [attr.alt]="'storyDetails.writingPreview' | translate" />
+                [label]="'common.save' | translate"
 
-                  </figure>
+                icon="pi pi-check"
 
-                } @else if (writingComposerNeedsMediaSlot()) {
+                [loading]="savingWriting()"
 
-                  <div class="writing-composer__media-placeholder">
-
-                    {{ 'storyDetails.writingImageSlot' | translate }}
-
-                  </div>
-
-                }
-
-                <textarea
-
-                  class="writing-composer__text continue-story-editor__textarea"
-
-                  pTextarea
-
-                  [autoResize]="false"
-
-                  [placeholder]="'storyDetails.continuePlaceholder' | translate"
-
-                  [ngModel]="newWritingText()"
-
-                  (ngModelChange)="onWritingInput($event)">
-
-                </textarea>
-
-              </div>
-
-            </div>
-
-            <div class="continue-story-editor__meta">
-
-              <div class="continue-story-editor__image">
-
-                <label class="continue-story-editor__image-picker">
-
-                  <i class="pi pi-image"></i>
-
-                  <span>{{ 'newStory.uploadImage' | translate }}</span>
-
-                  <input
-
-                    type="file"
-
-                    accept="image/jpeg,image/png,image/webp"
-
-                    hidden
-
-                    (change)="onWritingImageSelected($event)" />
-
-                </label>
-
-                @if (selectedWritingImage()) {
-
-                  <p-button
-
-                    [label]="'storyDetails.removeImage' | translate"
-
-                    severity="secondary"
-
-                    text
-
-                    (onClick)="clearWritingImage()" />
-
-                }
-
-              </div>
-
-              <div class="continue-story-editor__actions">
-
-                <p-button
-
-                  [label]="'common.cancel' | translate"
-
-                  severity="secondary"
-
-                  text
-
-                  (onClick)="cancelWritingEditor()" />
-
-                <p-button
-
-                  [label]="'common.save' | translate"
-
-                  icon="pi pi-check"
-
-                  [loading]="savingWriting()"
-
-                  (onClick)="saveWriting()" />
-
-              </div>
+                (onClick)="saveWriting()" />
 
             </div>
 

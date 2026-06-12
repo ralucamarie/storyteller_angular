@@ -148,7 +148,7 @@
     "categoriesRequired": "Selectează cel puțin o categorie.",
     "layout": "Layout",
     "openingWriting": "Primul fragment",
-    "imageHint": "Imaginea este opțională. JPG, PNG sau WebP, max. 8 MB.",
+    "editorHint": "Formatează textul și inserează imagini din bara de instrumente. JPG, PNG sau WebP, max. 8 MB.",
     "changeImage": "Schimbă imaginea",
     "uploadImage": "Încarcă imagine (opțional)",
     "contentPlaceholder": "Scrie prima parte a poveștii...",
@@ -166,6 +166,18 @@
     "dismiss": "Închide",
     "toggle": "Ai nevoie de inspirație? Deschide asistentul AI",
     "error": "Asistentul nu este disponibil momentan. Încearcă din nou."
+  },
+  "writingEditor": {
+    "bold": "Aldin",
+    "italic": "Cursiv",
+    "underline": "Subliniat",
+    "orderedList": "Listă numerotată",
+    "bulletList": "Listă cu puncte",
+    "blockquote": "Citat",
+    "imageBlock": "Inserează imagine pe toată lățimea",
+    "imageLeft": "Inserează imagine stânga (text înfășurat)",
+    "imageRight": "Inserează imagine dreapta (text înfășurat)",
+    "imageUploadError": "Nu s-a putut încărca imaginea. Încearcă din nou."
   },
   "storyDetails": {
     "favoriteAuthor": "Marchează autorul ca favorit",
@@ -262,17 +274,13 @@
       "label": "Imagine deasupra, text dedesubt",
       "short": "Sus / jos"
     },
-    "image_left_50": {
-      "label": "Imagine stânga 50%, text dreapta 50%",
-      "short": "50 / 50"
+    "image_left": {
+      "label": "Imagine stânga, text înfășurat",
+      "short": "Stânga"
     },
-    "image_left_30": {
-      "label": "Imagine stânga 30%, text dreapta 70%",
-      "short": "30 / 70"
-    },
-    "text_left_70": {
-      "label": "Text stânga 70%, imagine dreapta 30%",
-      "short": "70 / 30"
+    "image_right": {
+      "label": "Imagine dreapta, text înfășurat",
+      "short": "Dreapta"
     }
   },
   "news": {

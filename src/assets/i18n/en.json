@@ -148,7 +148,7 @@
     "categoriesRequired": "Select at least one category.",
     "layout": "Layout",
     "openingWriting": "Opening writing",
-    "imageHint": "Image is optional. JPG, PNG, or WebP up to 8 MB.",
+    "editorHint": "Format text and insert images with the toolbar. JPG, PNG, or WebP up to 8 MB.",
     "changeImage": "Change image",
     "uploadImage": "Upload image (optional)",
     "contentPlaceholder": "Write the first part of your story...",
@@ -166,6 +166,18 @@
     "dismiss": "Close",
     "toggle": "Need inspiration? Open the AI assistant",
     "error": "The assistant is unavailable right now. Please try again."
+  },
+  "writingEditor": {
+    "bold": "Bold",
+    "italic": "Italic",
+    "underline": "Underline",
+    "orderedList": "Numbered list",
+    "bulletList": "Bullet list",
+    "blockquote": "Quote",
+    "imageBlock": "Insert full-width image",
+    "imageLeft": "Insert image on the left (text wraps)",
+    "imageRight": "Insert image on the right (text wraps)",
+    "imageUploadError": "Could not upload the image. Please try again."
   },
   "storyDetails": {
     "favoriteAuthor": "Mark author as favorite",
@@ -262,17 +274,13 @@
       "label": "Image above, text below",
       "short": "Top / bottom"
     },
-    "image_left_50": {
-      "label": "Image left 50%, text right 50%",
-      "short": "50 / 50"
+    "image_left": {
+      "label": "Image left, text wraps (max 40%)",
+      "short": "Left"
     },
-    "image_left_30": {
-      "label": "Image left 30%, text right 70%",
-      "short": "30 / 70"
-    },
-    "text_left_70": {
-      "label": "Text left 70%, image right 30%",
-      "short": "70 / 30"
+    "image_right": {
+      "label": "Image right, text wraps (max 40%)",
+      "short": "Right"
     }
   },
   "news": {

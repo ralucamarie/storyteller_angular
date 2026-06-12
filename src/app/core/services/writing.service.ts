@@ -3,12 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { WRITINGS_API } from '../constants/api.constants';
 import { Writing } from '../models/writing.model';
-import { WritingLayout } from '../models/writing-layout.model';
-
 export interface CreateWritingRequest {
   story: number;
   text: string;
-  layout?: WritingLayout;
 }
 
 @Injectable({ providedIn: 'root' })

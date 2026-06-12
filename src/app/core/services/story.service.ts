@@ -4,14 +4,10 @@ import { catchError, Observable, of } from 'rxjs';
 import { API_BASE_URL } from '../constants/api.constants';
 import { IStory, IStoryOverview, Story } from '../models/story.model';
 
-import { WritingLayout } from '../models/writing-layout.model';
-
 export interface CreateStoryRequest {
   title: string;
   content: string;
   categories: string[];
-  image?: File;
-  layout?: WritingLayout;
 }
 
 export interface TypingUser {
@@ -53,12 +49,6 @@ export class StoryService {
     const form = new FormData();
     form.append('title', payload.title);
     form.append('content', payload.content);
-    if (payload.image) {
-      form.append('image', payload.image);
-    }
-    if (payload.layout) {
-      form.append('layout', payload.layout);
-    }
     payload.categories?.forEach((category) => form.append('categories', category));
     return this.http.post<Story>(this.apiUrl, form);
   }

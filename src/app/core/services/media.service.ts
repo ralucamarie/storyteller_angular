@@ -19,6 +19,12 @@ export class MediaService {
     return this.http.delete<void>(AUTH_API.avatar);
   }
 
+  uploadWritingInlineImage(file: File): Observable<{ url: string }> {
+    const formData = new FormData();
+    formData.append('image', file);
+    return this.http.post<{ url: string }>(`${WRITINGS_API}inline-image/`, formData);
+  }
+
   uploadWritingImage(writingId: number, file: File): Observable<Writing> {
     const formData = new FormData();
     formData.append('image', file);

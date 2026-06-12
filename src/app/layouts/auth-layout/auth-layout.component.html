@@ -1,7 +1,16 @@
 <div class="auth-layout min-h-screen flex items-center justify-center p-6">
   <div class="w-full max-w-md">
     <div class="text-center mb-8">
-      <h1 class="text-3xl font-bold">Storyteller</h1>
+      <div class="auth-brand" aria-label="povești cu pești">
+        <img
+          src="assets/brand/povesticupesti-icon.png"
+          alt=""
+          aria-hidden="true"
+          class="auth-brand__icon" />
+        <span class="auth-brand__name">
+          povești cu pești<span class="auth-brand__tld">.ro</span>
+        </span>
+      </div>
       <p class="text-surface-500 mt-2">{{ 'auth.layout.tagline' | translate }}</p>
     </div>
     <router-outlet />

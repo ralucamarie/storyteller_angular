@@ -60,20 +60,20 @@
         <a
           class="story-card__excerpt"
           [routerLink]="['/story-details', story()?.id]">
-          {{ firstWriting()?.text }}
+          {{ writingExcerpt() }}
         </a>
       } @else if (layout() === 'grid') {
         <a
           class="story-card__thumb story-card__thumb--text"
           [routerLink]="['/story-details', story()?.id]"
           [attr.aria-label]="'dashboard.openStory' | translate">
-          <span class="story-card__thumb-text">{{ firstWriting()?.text }}</span>
+          <span class="story-card__thumb-text">{{ writingExcerpt() }}</span>
         </a>
       } @else {
         <a
           class="story-card__excerpt story-card__excerpt--full"
           [routerLink]="['/story-details', story()?.id]">
-          {{ firstWriting()?.text }}
+          {{ writingExcerpt() }}
         </a>
       }
     </div>

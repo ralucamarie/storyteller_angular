@@ -1,0 +1,118 @@
+.writing-prose {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  font-size: 1.5rem;
+  line-height: 2.5rem;
+  overflow-wrap: anywhere;
+
+  &::after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+
+  :where(p) {
+    margin: 0 0 0.75rem;
+    text-indent: 2rem;
+  }
+
+  :where(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  :where(h2, h3) {
+    margin: 1rem 0 0.5rem;
+    text-indent: 0;
+    line-height: 1.4;
+  }
+
+  :where(ul, ol) {
+    margin: 0 0 0.75rem 1.5rem;
+    padding: 0;
+    text-indent: 0;
+  }
+
+  :where(blockquote) {
+    margin: 0 0 0.75rem;
+    padding-left: 1rem;
+    border-left: 3px solid #cbd5e1;
+    text-indent: 0;
+    color: #475569;
+  }
+
+  :where(.writing-img-frame) {
+    text-indent: 0;
+    margin: 0.75rem 0;
+  }
+
+  :where(.writing-img-frame--block) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-height: 18rem;
+    overflow: hidden;
+    border-radius: 0.75rem;
+    background: #f8fafc;
+  }
+
+  :where(.writing-img-frame--side) {
+    max-height: 14rem;
+    overflow: hidden;
+  }
+
+  :where(img.writing-img-block) {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    max-height: 18rem;
+    height: auto;
+    margin: 0 auto;
+    border-radius: 0.75rem;
+    object-fit: contain;
+  }
+
+  :where(img.writing-img-left) {
+    float: left;
+    width: 40%;
+    max-width: 40%;
+    max-height: 14rem;
+    height: auto;
+    margin: 0 1rem 0.75rem 0;
+    border-radius: 0.75rem;
+    object-fit: contain;
+  }
+
+  :where(img.writing-img-right) {
+    float: right;
+    width: 40%;
+    max-width: 40%;
+    max-height: 14rem;
+    height: auto;
+    margin: 0 0 0.75rem 1rem;
+    border-radius: 0.75rem;
+    object-fit: contain;
+  }
+
+  :where(img:not([class])) {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    margin: 0.75rem 0;
+    border-radius: 0.75rem;
+    object-fit: contain;
+  }
+}
+
+@media (max-width: 640px) {
+  .writing-prose {
+    :where(img.writing-img-left, img.writing-img-right) {
+      float: none;
+      width: 100%;
+      max-width: 100%;
+      margin: 0 0 0.75rem;
+    }
+  }
+}

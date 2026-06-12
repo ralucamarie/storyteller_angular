@@ -13,9 +13,11 @@ import { User } from '../../core/models/user.model';
 
 import { Writing } from '../../core/models/writing.model';
 import {
-  resolveWritingLayout,
-  WritingLayout,
-} from '../../core/models/writing-layout.model';
+  appendPlainTextToWritingHtml,
+  htmlToPlainText,
+  isWritingHtmlEmpty,
+  resolveWritingHtml,
+} from '../../core/utils/writing-html.utils';
 
 import { MenuItem, ConfirmationService } from 'primeng/api';
 
@@ -32,8 +34,11 @@ import { Message } from 'primeng/message';
 import { SelectButton } from 'primeng/selectbutton';
 
 import { Menu } from 'primeng/menu';
+import { Tag } from 'primeng/tag';
 
 import { Story } from '../../core/models/story.model';
+import { Category } from '../../core/models/category.model';
+import { CategoryFormatPipe } from '../../core/pipes/category-format.pipe';
 
 import { StoryService } from '../../core/services/story.service';
 
@@ -45,18 +50,16 @@ import { CommentService } from '../../core/services/comment.service';
 
 import { AuthService } from '../../core/services/auth.service';
 
-import { MediaService } from '../../core/services/media.service';
-
 import {
   resolveAvatarUrl,
-  resolveWritingImageUrl,
   withCacheBust,
 } from '../../core/utils/media.utils';
 
 import { AuthorFavoriteIconComponent } from '../../shared/components/author-favorite-icon/author-favorite-icon.component';
 import { PageBreadcrumbComponent } from '../../shared/components/page-breadcrumb/page-breadcrumb.component';
-import { WritingLayoutPickerComponent } from '../../shared/components/writing-layout-picker/writing-layout-picker.component';
 import { WritingAssistPanelComponent } from '../../shared/components/writing-assist-panel/writing-assist-panel.component';
+import { WritingContentComponent } from '../../shared/components/writing-content/writing-content.component';
+import { WritingRichEditorComponent } from '../../shared/components/writing-rich-editor/writing-rich-editor.component';
 
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
@@ -93,13 +96,17 @@ type CommentSortFilter = 'recent' | 'oldest' | 'relevant';
     SelectButton,
 
     PageBreadcrumbComponent,
-    WritingLayoutPickerComponent,
     WritingAssistPanelComponent,
+    WritingContentComponent,
+    WritingRichEditorComponent,
     AuthorFavoriteIconComponent,
 
     Menu,
 
     RouterLink,
+
+    Tag,
+    CategoryFormatPipe,
 
     TranslatePipe,
 
@@ -122,8 +129,6 @@ export class StoryDetailsComponent implements OnInit, OnDestroy {
   private readonly writingService = inject(WritingService);
 
   private readonly commentService = inject(CommentService);
-
-  private readonly mediaService = inject(MediaService);
 
   private readonly authService = inject(AuthService);
 
@@ -149,13 +154,7 @@ export class StoryDetailsComponent implements OnInit, OnDestroy {
 
   readonly showWritingEditor = signal(false);
 
-  readonly newWritingText = signal('');
-
-  readonly selectedWritingImage = signal<File | null>(null);
-
-  readonly writingImagePreview = signal<string | null>(null);
-
-  readonly selectedWritingLayout = signal<WritingLayout>('stack');
+  readonly newWritingHtml = signal('');
 
   readonly savingWriting = signal(false);
 
@@ -246,8 +245,16 @@ export class StoryDetailsComponent implements OnInit, OnDestroy {
     );
   });
 
-  readonly resolveWritingImageUrl = resolveWritingImageUrl;
-  readonly resolveWritingLayout = resolveWritingLayout;
+  readonly storyCategories = computed((): Category[] => {
+    const story = this.story();
+    if (!story) {
+      return [];
+    }
+    return story.categories?.length ? story.categories : story.categoryObjects ?? [];
+  });
+
+  readonly resolveWritingHtml = resolveWritingHtml;
+  readonly htmlToPlainText = htmlToPlainText;
 
   storyId: number | null = null;
 
@@ -311,7 +318,8 @@ export class StoryDetailsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.stopTypingPoll();
-    clearTimeout(this.typingDebounce);
+    this.stopTypingPulse();
+    this.typingAuthors.set([]);
   }
 
   typingLabel(): string {
@@ -329,21 +337,27 @@ export class StoryDetailsComponent implements OnInit, OnDestroy {
   }
 
   onWritingInput(value: string): void {
-    this.newWritingText.set(value);
-    if (!this.showWritingEditor() || !this.storyId || !value.trim()) {
+    this.newWritingHtml.set(value);
+    this.scheduleTypingPulse();
+  }
+
+  private scheduleTypingPulse(): void {
+    if (!this.showWritingEditor() || !this.storyId) {
       return;
     }
 
     clearTimeout(this.typingDebounce);
     this.typingDebounce = setTimeout(() => {
-      this.storyService.sendTypingPulse(this.storyId!).subscribe();
+      if (!this.showWritingEditor() || !this.storyId) {
+        return;
+      }
+      this.storyService.sendTypingPulse(this.storyId).subscribe();
     }, 300);
   }
 
-  private startTypingPoll(storyId: number): void {
-    this.stopTypingPoll();
-    this.refreshTypingStatus(storyId);
-    this.typingPollInterval = setInterval(() => this.refreshTypingStatus(storyId), 2000);
+  private stopTypingPulse(): void {
+    clearTimeout(this.typingDebounce);
+    this.typingDebounce = undefined;
   }
 
   private stopTypingPoll(): void {
@@ -351,6 +365,12 @@ export class StoryDetailsComponent implements OnInit, OnDestroy {
       clearInterval(this.typingPollInterval);
       this.typingPollInterval = undefined;
     }
+  }
+
+  private startTypingPoll(storyId: number): void {
+    this.stopTypingPoll();
+    this.refreshTypingStatus(storyId);
+    this.typingPollInterval = setInterval(() => this.refreshTypingStatus(storyId), 2000);
   }
 
   private refreshTypingStatus(storyId: number): void {
@@ -668,28 +688,6 @@ export class StoryDetailsComponent implements OnInit, OnDestroy {
     );
   }
 
-  onWritingImageSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
-    if (!file) {
-      return;
-    }
-    this.selectedWritingImage.set(file);
-    this.writingImagePreview.set(URL.createObjectURL(file));
-  }
-
-  clearWritingImage(): void {
-    this.selectedWritingImage.set(null);
-    this.writingImagePreview.set(null);
-    if (this.selectedWritingLayout() !== 'stack') {
-      this.selectedWritingLayout.set('stack');
-    }
-  }
-
-  writingComposerNeedsMediaSlot(): boolean {
-    return this.selectedWritingLayout() !== 'stack';
-  }
-
   private appendWritingToStory(writing: Writing): void {
     this.story.update((current) =>
       current
@@ -843,8 +841,9 @@ export class StoryDetailsComponent implements OnInit, OnDestroy {
   }
 
   onAssistInsert(text: string): void {
-    const current = this.newWritingText().trim();
-    this.newWritingText.set(current ? `${current}\n\n${text}` : text);
+    const current = this.newWritingHtml();
+    this.newWritingHtml.set(appendPlainTextToWritingHtml(current, text));
+    this.scheduleTypingPulse();
   }
 
 
@@ -853,12 +852,11 @@ export class StoryDetailsComponent implements OnInit, OnDestroy {
 
     this.showWritingEditor.set(false);
 
-    this.newWritingText.set('');
-
-    this.clearWritingImage();
-    this.selectedWritingLayout.set('stack');
+    this.newWritingHtml.set('');
 
     this.writingError.set(null);
+
+    this.stopTypingPulse();
 
   }
 
@@ -866,13 +864,13 @@ export class StoryDetailsComponent implements OnInit, OnDestroy {
 
   saveWriting(): void {
 
-    const text = this.newWritingText().trim();
+    const text = this.newWritingHtml();
 
     const storyId = Number(this.story()?.id);
 
 
 
-    if (!text) {
+    if (isWritingHtmlEmpty(text)) {
 
       this.writingError.set(this.translate.instant('storyDetails.writingEmpty'));
 
@@ -899,30 +897,12 @@ export class StoryDetailsComponent implements OnInit, OnDestroy {
 
 
     this.writingService
-      .createWriting({ story: storyId, text, layout: this.selectedWritingLayout() })
+      .createWriting({ story: storyId, text })
       .subscribe({
       next: (writing) => {
-        const file = this.selectedWritingImage();
-        if (!file || !writing.id) {
-          this.appendWritingToStory(writing);
-          this.savingWriting.set(false);
-          this.cancelWritingEditor();
-          return;
-        }
-
-        this.mediaService.uploadWritingImage(Number(writing.id), file).subscribe({
-          next: (updated) => {
-            this.appendWritingToStory(updated);
-            this.savingWriting.set(false);
-            this.cancelWritingEditor();
-          },
-          error: () => {
-            this.appendWritingToStory(writing);
-            this.savingWriting.set(false);
-            this.writingError.set(this.translate.instant('storyDetails.writingSaveError'));
-            this.cancelWritingEditor();
-          },
-        });
+        this.appendWritingToStory(writing);
+        this.savingWriting.set(false);
+        this.cancelWritingEditor();
       },
       error: (err) => {
         this.savingWriting.set(false);
@@ -940,6 +920,11 @@ export class StoryDetailsComponent implements OnInit, OnDestroy {
     this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       const id = Number(params.get('id'));
       if (id) {
+        if (this.storyId !== id) {
+          this.cancelWritingEditor();
+          this.stopTypingPoll();
+          this.typingAuthors.set([]);
+        }
         this.storyId = id;
         this.storyService.getStory(id.toString());
         this.startTypingPoll(id);
